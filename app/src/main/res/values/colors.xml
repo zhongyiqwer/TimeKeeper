@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="bg">#f4f4f4</color>
+    <color name="yupColor">#fcb942</color>
+
+
+    <!--活动下标的字体颜色-->
+    <color name="color_bottom_text_normal">#9da0a4</color>
+    <color name="color_bottom_text_press">#4f9ef6</color>
+
+    <color name="toolbar_bg_color">#fcb942</color>
+
+    <color name="tooltip_bg_color">#40E0D0</color>
+
+    <color name="word_color_white">#FFFFFF</color>
+
+    <color name="word_color_black">#333333</color>
+    <color name="tab_color_normal">#F0F0F0</color>
+
+    <!-- 浅灰 -->
+    <color name="lightGray">#CCCCCC</color>
+    <!-- 白色 -->
+    <color name="white">#FFFFFF</color>
+
+</resources>

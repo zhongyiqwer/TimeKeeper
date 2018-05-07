@@ -1,5 +1,6 @@
 package com.example.timekeeper.module_b_main
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -7,7 +8,9 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.example.timekeeper.R
+import com.example.timekeeper.activity.AddActivity
 import com.example.timekeeper.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -33,7 +36,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        tv.setText("nihaoa")
+        val intent = Intent(this, AddActivity::class.java)
+        tv.setOnClickListener(View.OnClickListener { startActivity(intent) })
 
     }
 

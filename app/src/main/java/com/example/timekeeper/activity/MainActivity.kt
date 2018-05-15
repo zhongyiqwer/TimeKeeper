@@ -1,4 +1,4 @@
-package com.example.timekeeper.module_b_main
+package com.example.timekeeper.activity
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView

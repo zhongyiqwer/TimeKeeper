@@ -26,4 +26,31 @@
     <!-- 白色 -->
     <color name="white">#FFFFFF</color>
 
+    <color name="black">#000000</color>
+    <!-- 黑色 -->
+    <color name="transBlack">#80000000</color>
+    <!-- 透明黑色 -->
+    <color name="transWhite">#99FFFFFF</color>
+    <!-- 透明白色 -->
+    <color name="lighterGray">#e3e3e3</color>
+    <!-- 超浅灰 -->
+
+    <color name="textGray">#ABAAAA</color>
+    <!-- 文字灰 -->
+    <color name="bgColor">#f7f7f7</color>
+    <!-- 背景颜色 -->
+    <color name="darkGray">#444444</color>
+
+    <color name="gray">#808080</color>
+    <!---->
+
+    <!-- 绿色 -->
+
+    <color name="darkgreen">#006400</color>
+    <color name="light_blue">#8CA4FF</color>
+
+    <color name="lightgreen">#00EE00</color>
+
+    <color name="itemback">#FFFFFF</color>
+
 </resources>

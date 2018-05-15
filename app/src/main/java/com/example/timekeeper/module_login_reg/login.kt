@@ -1,4 +1,4 @@
-package com.example.timekeeper.module_a_login
+package com.example.timekeeper.module_login_reg
 
 import android.os.Bundle
 import com.example.timekeeper.base.BaseActivity

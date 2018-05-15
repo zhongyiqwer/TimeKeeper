@@ -2,10 +2,8 @@ package com.example.timekeeper.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import com.example.timekeeper.R
 import com.example.timekeeper.base.BaseActivity
-import com.example.timekeeper.module_b_main.MainActivity
 import java.util.*
 
 

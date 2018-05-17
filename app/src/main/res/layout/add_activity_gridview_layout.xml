@@ -7,12 +7,12 @@
 
     <GridView
         android:id="@+id/gridView2"
-        android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:horizontalSpacing="2dp"
-        android:verticalSpacing="2dp"
+        android:clickable="true"
+        android:horizontalSpacing="1dp"
+        android:numColumns="4"
         android:padding="2dp"
-        android:numColumns="4" />
+        android:verticalSpacing="1dp" />
 
 </LinearLayout>

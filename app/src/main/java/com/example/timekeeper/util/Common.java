@@ -22,7 +22,7 @@ public class Common {
 //	public static final String FULL_IMG_CACHE_PATH = "/mnt/sdcard"+IMG_CACHE_PATH;
 //	public static String local_pic_path = Environment.getExternalStorageDirectory()+"/Android/data/cn.xdu.poscam/cache/imageCache/";
 //	public static User user;
-//	public static int userId;
+	public static int userId;
 //	public static PosLib pos;
 
 	public static String fragParamName;

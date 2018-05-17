@@ -9,24 +9,40 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.ashokvarma.bottomnavigation.BottomNavigationBar
+import com.ashokvarma.bottomnavigation.BottomNavigationItem
 import com.example.timekeeper.R
 import com.example.timekeeper.activity.AddActivity
 import com.example.timekeeper.base.BaseActivity
+import com.example.timekeeper.fragment.allActionFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import android.R.id.tabs
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener ,BottomNavigationBar.OnTabSelectedListener{
+
+    lateinit internal var allFragment :allActionFragment
+    lateinit internal var allFragment1 :allActionFragment
+    lateinit internal var allFragment2 :allActionFragment
+    lateinit internal var allFragment3 :allActionFragment
+
+    lateinit internal var bottomNavigationBar: BottomNavigationBar
+    internal var lastSelectedPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        /*fab.setOnClickListener { view ->
+        initBottomNavi()
+
+        fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
-        }*/
+        }
 
         //drawer_layout的进场与退场动画
         val toggle = ActionBarDrawerToggle(
@@ -37,7 +53,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         nav_view.setNavigationItemSelectedListener(this)
 
         val intent = Intent(this, AddActivity::class.java)
-        tv.setOnClickListener(View.OnClickListener { startActivity(intent) })
+
 
     }
 
@@ -48,8 +64,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             super.onBackPressed()
         }
     }
-
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -92,5 +106,56 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun initBottomNavi(){
+        allFragment = allActionFragment()
+        allFragment1 = allActionFragment()
+        allFragment2 = allActionFragment()
+        allFragment3 = allActionFragment()
+        bottomNavigationBar = findViewById<BottomNavigationBar>(R.id.bottomNavigationBar)
+        bottomNavigationBar.setTabSelectedListener(this)
+        bottomNavigationBar.clearAll()
+        bottomNavigationBar.setMode(BottomNavigationBar.MODE_DEFAULT)
+        bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_DEFAULT)
+        bottomNavigationBar
+                .addItem(BottomNavigationItem(R.drawable.ic_home_white_24dp, "Home").setActiveColorResource(R.color.orange))
+                .addItem(BottomNavigationItem(R.drawable.ic_book_white_24dp, "Books").setActiveColorResource(R.color.teal))
+                .addItem(BottomNavigationItem(R.drawable.ic_music_note_white_24dp, "Music").setActiveColorResource(R.color.blue))
+                .addItem(BottomNavigationItem(R.drawable.ic_tv_white_24dp, "Movies & TV").setActiveColorResource(R.color.brown))
+                .initialise()
+        bottomNavigationBar.selectTab(if (lastSelectedPosition > 3) 3 else lastSelectedPosition, true)
+
+        setDefaultFragment()
+    }
+
+    private fun setDefaultFragment() {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fragment_contain, allFragment)
+        }.commitAllowingStateLoss()
+    }
+
+    override fun onTabReselected(position: Int) {
+
+    }
+
+    override fun onTabUnselected(position: Int) {
+
+    }
+
+    override fun onTabSelected(position: Int) {
+        lastSelectedPosition = position
+        replaceFragments(position)
+    }
+
+    private fun replaceFragments(position: Int) {
+        supportFragmentManager.beginTransaction().apply {
+            when (position) {
+                0 -> replace(R.id.fragment_contain, allFragment)
+                1 -> replace(R.id.fragment_contain, allFragment1)
+                2 -> replace(R.id.fragment_contain, allFragment2)
+                3 -> replace(R.id.fragment_contain, allFragment3)
+            }
+        }.commitAllowingStateLoss()
     }
 }

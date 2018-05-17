@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.timekeeper">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,6 +23,8 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTask"/>
         <activity android:name=".activity.AddActivity"/>
+        <activity android:name=".module_login_reg.login"/>
+        <activity android:name=".module_login_reg.reg"/>
     </application>
 
 </manifest>

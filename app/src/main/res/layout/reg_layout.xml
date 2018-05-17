@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:id="@+id/editV_frag_login_phone"
+            android:id="@+id/editV_frag_register_phone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            android:id="@+id/editV_frag_login_password"
+            android:id="@+id/editV_frag_register_password"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
@@ -58,56 +58,38 @@
             android:paddingTop="8dp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/editV_frag_register_password_agin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@drawable/bg_searchview"
+            android:drawableLeft="@drawable/password"
+            android:hint="请再次输入密码"
+            android:drawablePadding="6dp"
+            android:textColorHint="@color/lightGray"
+            android:maxLength="16"
+            android:paddingBottom="8dp"
+            android:inputType="textPassword"
+            android:paddingLeft="10dp"
+            android:textSize="14sp"
+            android:paddingTop="8dp" />
+    </LinearLayout>
+
     <Button
         android:layout_marginTop="50dp"
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_reg"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:background="@drawable/bg_btn_next_step"
-        android:text="登录"
+        android:text="注册"
         android:textColor="@color/white" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/editV_forget_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:background="@null"
-                android:textColor="@color/yupColor"
-                android:text="忘记密码" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/editV__register_toregister"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="16dp"
-                android:background="@null"
-                android:textSize="14dp"
-                android:textColor="@color/yupColor"
-                android:text="注册账号" />
-        </RelativeLayout>
-
-
-    </LinearLayout>
 
 
 </LinearLayout>

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#000000</color>
+    <!--通知栏颜色-->
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FF4081</color>
     <color name="bg">#f4f4f4</color>
     <color name="yupColor">#fcb942</color>
@@ -21,9 +22,9 @@
     <color name="word_color_black">#333333</color>
     <color name="tab_color_normal">#F0F0F0</color>
 
+    <!-- 浅灰 -->
+    <color name="lightGray">#CCCCCC</color>
 
-    <color name="white">#FFFFFF</color>
-    <!-- 白色 -->
     <color name="black">#000000</color>
     <!-- 黑色 -->
     <color name="transBlack">#80000000</color>
@@ -32,8 +33,7 @@
     <!-- 透明白色 -->
     <color name="lighterGray">#e3e3e3</color>
     <!-- 超浅灰 -->
-    <color name="lightGray">#CCCCCC</color>
-    <!-- 浅灰 -->
+
     <color name="textGray">#ABAAAA</color>
     <!-- 文字灰 -->
     <color name="bgColor">#f7f7f7</color>
@@ -51,4 +51,13 @@
     <color name="lightgreen">#00EE00</color>
 
     <color name="itemback">#FFFFFF</color>
+
+    <!--bottnavi-->
+    <color name="white">#FFFFFF</color>
+    <color name="teal">#00796B</color>
+    <color name="brown">#8D6E63</color>
+    <color name="blue">#2196F3</color>
+    <color name="grey">#607D8B</color>
+    <color name="orange">#F57C00</color>
+
 </resources>

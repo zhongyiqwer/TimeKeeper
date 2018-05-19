@@ -2,7 +2,6 @@ package com.example.timekeeper.module_login_reg
 
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.View
 import com.example.timekeeper.R
 import com.example.timekeeper.activity.MainActivity
@@ -12,10 +11,9 @@ import com.example.timekeeper.util.EncodeAndDecode
 import com.example.timekeeper.util.HttpHelper
 import com.example.timekeeper.util.URL
 import kotlinx.android.synthetic.main.login_layout.*
-import kotlinx.android.synthetic.main.reg_layout.*
 import org.json.JSONException
 import java.io.IOException
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by ZJX on 2018/5/4.
@@ -42,6 +40,8 @@ class login : BaseActivity() ,View.OnClickListener{
 
         setContentView(R.layout.login_layout)
         btn_login.setOnClickListener(this)
+        editV__register_toregister.setOnClickListener(this)
+        editV_forget_password.setOnClickListener(this)
 
     }
 
@@ -49,18 +49,23 @@ class login : BaseActivity() ,View.OnClickListener{
 
         if (v == editV__register_toregister){
             val intent = Intent()
-            finish()
             intent.setClass(this@login, reg::class.java)
             startActivity(intent)
+            finish()
         }
         if (v == editV_forget_password){
             val intent = Intent()
-            finish()
             intent.setClass(this@login, findPW::class.java)
             startActivity(intent)
+            finish()
         }
 
         if (v == btn_login){
+            val intent = Intent()
+            finish()
+            intent.setClass(this@login, MainActivity::class.java)
+            startActivity(intent)
+
             val flag = Common.isNetworkAvailable(this)
             if (flag == 0) {
                 Common.display(this, "请开启手机网络")

@@ -39,9 +39,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         initBottomNavi()
 
+        //新建活动
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                    .setAction("Action", null).show()
+            val intent = Intent(this, AddActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
         //drawer_layout的进场与退场动画
@@ -51,8 +55,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-
-        val intent = Intent(this, AddActivity::class.java)
 
 
     }
@@ -66,15 +68,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
             R.id.action_settings -> return true
             else -> return super.onOptionsItemSelected(item)
@@ -85,7 +83,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_camera -> {
-                // Handle the camera action
+                val intent = Intent(this, selectTimeActivity::class.java)
+                startActivity(intent)
+                finish()
             }
             R.id.nav_gallery -> {
 

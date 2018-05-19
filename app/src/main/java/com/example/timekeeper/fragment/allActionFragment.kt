@@ -1,5 +1,6 @@
 package com.example.timekeeper.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -7,9 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.Toast
 import com.example.timekeeper.R
-import java.util.ArrayList
+import com.example.timekeeper.activity.detailMyAddActivity
+import com.example.timekeeper.activity.selectTimeActivity
+import java.util.*
 
 /**
  * Created by Administrator on 2018/5/17.
@@ -34,7 +36,9 @@ class allActionFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         listView.setOnItemClickListener { parent, view, position, id ->
-            Toast.makeText(context!!," "+position,Toast.LENGTH_SHORT).show()
+            val intent = Intent(activity, detailMyAddActivity::class.java)
+            startActivity(intent)
+            //activity.finish()
         }
     }
 }

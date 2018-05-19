@@ -25,6 +25,9 @@
         <activity android:name=".activity.AddActivity"/>
         <activity android:name=".module_login_reg.login"/>
         <activity android:name=".module_login_reg.reg"/>
+        <activity android:name=".activity.selectTimeActivity"/>
+        <activity android:name=".activity.detailMyAddActivity"/>
+        <activity android:name=".activity.actionPersoneActivity"/>
     </application>
 
 </manifest>

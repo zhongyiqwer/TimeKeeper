@@ -19,7 +19,7 @@ class FlashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.flash_activity_layout)
         //进行一些初始化
-        intent = Intent(this, MainActivity::class.java)
+        intent = Intent(this, login::class.java)
         val timer = Timer()
         val task = object : TimerTask(){
             override fun run() {

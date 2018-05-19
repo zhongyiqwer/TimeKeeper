@@ -86,6 +86,7 @@
                 android:layout_marginRight="16dp"
                 android:background="@null"
                 android:textColor="@color/yupColor"
+                android:clickable="true"
                 android:text="忘记密码" />
         </RelativeLayout>
 
@@ -102,6 +103,7 @@
                 android:layout_marginLeft="16dp"
                 android:background="@null"
                 android:textSize="14dp"
+                android:clickable="true"
                 android:textColor="@color/yupColor"
                 android:text="注册账号" />
         </RelativeLayout>

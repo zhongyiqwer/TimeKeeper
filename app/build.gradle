@@ -60,4 +60,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation files('src/main/libs/fastjson-1.2.5.jar')
     compile 'com.ashokvarma.android:bottom-navigation-bar:2.0.4'
+    compile 'cn.yipianfengye.android:zxing-library:2.2'
 }

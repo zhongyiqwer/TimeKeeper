@@ -62,4 +62,12 @@
     <color name="grey">#607D8B</color>
     <color name="orange">#F57C00</color>
 
+    <!--sekbar-->
+    <color name="bar_deepgreen">#0E932E</color>
+    <color name="bar_lightgreen">#AAD08F</color>
+    <color name="bar_orange">#EFB336</color>
+    <color name="bar_red">#D81E06</color>
+    <color name="bar_gay">#8A8A8A</color>
+
+    <color name="fab">#55F57C00</color>
 </resources>

@@ -104,7 +104,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include_grid_view"
-        app:srcCompat="@drawable/phone" />
+        android:background="@drawable/btn_select_green" />
 
     <ImageButton
         android:id="@+id/IB_nocan"
@@ -114,13 +114,13 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include_grid_view"
-        app:srcCompat="@drawable/phone" />
+        android:background="@drawable/btn_big_red"/>
 
     <Button
         android:id="@+id/bt_fabu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="64dp"
         android:text="发  布"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

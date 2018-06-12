@@ -2,36 +2,28 @@ package com.example.timekeeper.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
-import org.json.JSONArray;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.HttpUrl;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okio.BufferedSource;
+
 
 
 /**
@@ -39,96 +31,31 @@ import okio.BufferedSource;
  */
 public class HttpHelper {
     private static final String TAG = "uploadFile";
-    private static final int TIME_OUT = 10 * 1000; // 超时时间
-    private static final String CHARSET = "utf-8"; // 设置编码
 
 
-    /**
-     * 向指定URL发送GET方法的请求
-     *
-     * @param url    发送请求的URL
-     * @return URL所代表远程资源的响应
-     */
-    public static String sendGet(String url) {
-
-        final String[] str = {""};
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-       client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                str[0] = response.body().toString();
-            }
-        });
-
-        return str.toString();
+    public static String getMessage(String response){
+        JSONObject jsonObject = JSON.parseObject(response);
+        String message = jsonObject.getString("message");
+        return message;
     }
 
     /**
      * 同时传送文件和字符串
      */
-
-    public static String postData(String url, HashMap<String, String>
-            map, HashMap<String, String> fileHM) throws Exception {
-
-        final String[] str = {""};
+    //请求服务器数据，获取的数据放在callback中
+    public static void sendOkHttpRequest(String url,HashMap<String, String>
+            map,okhttp3.Callback callback){
         OkHttpClient client = new OkHttpClient();
-        //FormBody.Builder body = new FormBody.Builder();
-        MultipartBody.Builder requestBody = new MultipartBody.Builder();
+        RequestBody requestBody = null;
         if (map != null && !map.isEmpty()) {
-            //上传参数
-            for (String key : map.keySet()) {
-                //body.add(key, map.get(key));
-                requestBody.addFormDataPart(key,map.get(key));
-            }
-
-
+            String jsonString = JSON.toJSONString(map);
+            requestBody = FormBody.create(MediaType.parse("application/json; charset=utf-8")
+                    , jsonString);
         }
-        if (fileHM != null && !fileHM.isEmpty()){
-            for (String key : map.keySet()){
-                File file = new File(map.get(key));
-                requestBody.addFormDataPart(key,file.getPath(),RequestBody.create(MediaType.parse("image/png"),file));
-            }
-
-        }
-
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody.build())
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                str[0] = response.body().toString();
-            }
-        });
-        return str.toString();
+        Request request = new Request.Builder().url(url).post(requestBody).build();
+        client.newCall(request).enqueue(callback);
     }
 
-
-    public static int getCode(String jsonStr) throws JSONException {
-        int code = 0;
-        if (jsonStr == null) {
-            code = 0;
-        } else {
-            JSONObject jsonObject = new JSONObject(jsonStr);
-            code = jsonObject.getInt("code");
-        }
-        return code;
-    }
 
     public static InputStream getStreamFromURL(String imageURL) {
         InputStream in = null;
@@ -145,8 +72,6 @@ public class HttpHelper {
         return in;
 
     }
-
-
 
 
     // 把一个url的网络图片变成一个本地的BitMap
@@ -214,7 +139,7 @@ public class HttpHelper {
      *
      * @throws JSONException
      */
-    public static HashMap<String, Object> AnalysisUid(
+   /* public static HashMap<String, Object> AnalysisUid(
             String jsonStr) throws JSONException {
 
         if (getCode(jsonStr) == 100) {
@@ -228,11 +153,11 @@ public class HttpHelper {
         }
 
     }
-    /**
+    *//**
      * 解析
      *
      * @throws JSONException
-     */
+     *//*
     public static HashMap<String, Object> AnalysisUserInfo(
             String jsonStr) throws JSONException {
 
@@ -261,11 +186,11 @@ public class HttpHelper {
 
     }
 
-    /**
+    *//**
      * 解析
      *
      * @throws JSONException
-     */
+     *//*
     public static HashMap<String, Object> AnalysisSinglePos(
             String jsonStr) throws JSONException {
 
@@ -301,11 +226,11 @@ public class HttpHelper {
     }
 
 
-    /**
+    *//**
      * 解析
      *
      * @throws JSONException
-     */
+     *//*
     public static  ArrayList<HashMap<String, Object>> AnalysisUserInfo2(
             String jsonStr) throws JSONException {
         ArrayList<JSONObject> jsonArrayList = TOJsonArray(jsonStr);
@@ -340,11 +265,11 @@ public class HttpHelper {
 
     }
 
-    /**
+    *//**
      * 解析
      *
      * @throws JSONException
-     */
+     *//*
     public static ArrayList<HashMap<String, Object>> AnalysisPosInfo(
             String jsonStr ) throws JSONException {
         ArrayList<JSONObject> jsonArrayList = TOJsonArray(jsonStr);
@@ -381,11 +306,11 @@ public class HttpHelper {
         }
     }
 
-    /**
+    *//**
      * 解析
      *
      * @throws JSONException
-     */
+     *//*
     public static ArrayList<HashMap<String, Object>> AnalysisTagInfo(
             String jsonStr ) throws JSONException {
         ArrayList<JSONObject> jsonArrayList = TOJsonArray(jsonStr);
@@ -412,11 +337,11 @@ public class HttpHelper {
 
 
 
-    /**
+    *//**
      * 解析
      *
      * @throws JSONException
-     */
+     *//*
     public static ArrayList<HashMap<String, Object>> AnalysisPosInfo2(
             String jsonStr ) throws JSONException {
         ArrayList<JSONObject> jsonArrayList = TOJsonArray2(jsonStr);
@@ -453,11 +378,11 @@ public class HttpHelper {
 
 
 
-    /**
+    *//**
      * 解析
      *
      * @throws JSONException
-     */
+     *//*
     public static ArrayList<JSONObject> TOJsonArray(
             String jsonStr) throws JSONException {
         if (jsonStr == null) {
@@ -479,11 +404,11 @@ public class HttpHelper {
         }
     }
 
-    /**
+    *//**
      * 解析
      *
      * @throws JSONException
-     */
+     *//*
     public static ArrayList<JSONObject> TOJsonArray2(
             String jsonStr) throws JSONException {
         if (jsonStr == null) {
@@ -497,7 +422,7 @@ public class HttpHelper {
             return pArrayList;
         }
     }
-
+*/
 
 }
 

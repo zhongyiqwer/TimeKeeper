@@ -126,7 +126,6 @@ public class DateTimeHelper {
 		if (calendar.get(Calendar.HOUR_OF_DAY)>=6 && calendar.get(Calendar.HOUR_OF_DAY)<=18) {
 			return true;
 		}
-		else
 		return false;
 		
 	}

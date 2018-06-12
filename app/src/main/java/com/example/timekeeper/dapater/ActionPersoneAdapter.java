@@ -14,6 +14,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.timekeeper.R;
+import com.example.timekeeper.listener.LevelChange;
+import com.example.timekeeper.util.Common;
+import com.example.timekeeper.util.HttpHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,18 +34,29 @@ public class ActionPersoneAdapter extends BaseAdapter {
 
     private ArrayList<String> spinneData;
 
-    private String defualtLevel ="中";
+    private boolean isMy;
 
-    public ActionPersoneAdapter(Context context, ArrayList<HashMap<String,String>> mapList) {
+    private HashMap<Integer,Integer> lastLevel;
+
+    private LevelChange levelChange;
+
+
+    public ActionPersoneAdapter(Context context, ArrayList<HashMap<String,String>> mapList,boolean isMy) {
         this.context = context;
         this.mapList = mapList;
+        this.isMy = isMy;
         initdata();
+        lastLevel = new HashMap<>();
     }
     private class ViewHolder {
          ImageView imageView;
          TextView name;
          TextView level;
          Spinner spinner;
+    }
+
+    public void setLevelChangeListener(LevelChange listener){
+        this.levelChange = listener;
     }
 
     @Override
@@ -76,19 +90,30 @@ public class ActionPersoneAdapter extends BaseAdapter {
             adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             holder.spinner.setAdapter(adapter1);
             holder.spinner.setTag(position);
-            holder.spinner.setOnItemSelectedListener(new ItemClickSelectListener(holder));
+            if (isMy){
+                holder.spinner.setOnItemSelectedListener(new ItemClickSelectListener(holder,position));
+            }
 
             convertView.setTag(holder);
         } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-            String imageUrl = map.get("image");
-            //可以上glid
-            holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_home_white_24dp));
-            holder.name.setText(map.get("name"));
-            //holder.level.setText(map.get("level"));
-            holder.spinner.setSelection(getSpinnerLevel(map.get("level")));
+        holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_menu_share));
+
+        if (isMy){
+            if (map.get("userId").equals(Common.userId)){
+                holder.name.setText("自己");
+                holder.spinner.setSelection(2);
+                lastLevel.put(position,2);
+                return convertView;
+            }
+        }
+
+        holder.name.setText(map.get("userName"));
+        holder.spinner.setSelection(Integer.parseInt(map.get("userLevel"))-1);
+        lastLevel.put(position,Integer.parseInt(map.get("userLevel"))-1);
+
         return convertView;
     }
 
@@ -105,15 +130,21 @@ public class ActionPersoneAdapter extends BaseAdapter {
 
     private class ItemClickSelectListener implements AdapterView.OnItemSelectedListener{
         ViewHolder holder;
+        int levelPositon;
 
-        public ItemClickSelectListener(ViewHolder holder) {
+        public ItemClickSelectListener(ViewHolder holder,int positon) {
             this.holder = holder;
+            this.levelPositon = positon;
         }
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            holder.spinner.setSelection(position);
-            //holder.level.setText(spinneData.get(position));
+            if (!lastLevel.isEmpty() && lastLevel.get(levelPositon)!= position) {
+                holder.spinner.setSelection(position);
+                //holder.level.setText(spinneData.get(position));
+               //调整权限
+                levelChange.userLevelChanghe(mapList.get(levelPositon).get("userId"),(position+1)+"");
+            }
         }
 
         @Override

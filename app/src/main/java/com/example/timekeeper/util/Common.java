@@ -2,12 +2,15 @@ package com.example.timekeeper.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Common {
@@ -16,14 +19,13 @@ public class Common {
 //	public static final String SECRET_ID = "AKIDBH8PhKWqB7ZtpDFBjVNHIrt5iZp6stJo";
 //	public static final String SECRET_KEY = "3kRpuIdcQlXuH0LBlAXLcJ8NOyxtWkdG";
 //	public static Bitmap bitmap;
-//	public static final String [] SELF_POS_TYPE ={"女神自拍", "潮男自拍"};
-//	public static final String [] POS_TYPE ={"美女","帅哥","情侣","集体","小孩"};
 //	public static final String IMG_CACHE_PATH = "/PoseCamera/";
 //	public static final String FULL_IMG_CACHE_PATH = "/mnt/sdcard"+IMG_CACHE_PATH;
 //	public static String local_pic_path = Environment.getExternalStorageDirectory()+"/Android/data/cn.xdu.poscam/cache/imageCache/";
 //	public static User user;
-	public static int userId;
-//	public static PosLib pos;
+	public static final String TAG = "timeKeeper:";
+
+	public static String userId;
 
 	public static String fragParamName;
 	public static String fragParam;
@@ -31,26 +33,54 @@ public class Common {
 	public static boolean isVisible;
 	public static AlertDialog mAlertDialog;
 
+	public static ArrayList<HashMap<String,String>> fragmentData;
 
-   public static int type2int(String type){
-	   int typeInt = 1;
-	   if (type.equals("女神自拍")){
-		   typeInt = 1;
-	   }else if(type.equals("潮男自拍")){
-		   typeInt = 2;
-	   }else if(type.equals("美女")){
-		   typeInt = 3;
-	   }else if(type.equals("帅哥")){
-		   typeInt = 4;
-	   }else if(type.equals("情侣")){
-		   typeInt = 5;
-	   }else if(type.equals("集体")){
-		   typeInt = 6;
-	   }else if(type.equals("小孩")){
-		   typeInt = 7;
-	   }
-	   return typeInt;
-   }
+	public static String selecTimeActivityId;
+
+
+	public static void putFragmentData(ArrayList<HashMap<String,String>> dataList){
+		fragmentData = dataList;
+	}
+
+	//返回所有活动
+	public static ArrayList<HashMap<String,String>> getFragmentData(){
+		return fragmentData;
+	}
+
+	//返回未完成活动
+	public static ArrayList<HashMap<String,String>> getFragmentNoDone(){
+		ArrayList<HashMap<String, String>> maps = new ArrayList<>();
+		for (HashMap map:fragmentData) {
+			if (map.get("actionState").equals("0")){
+				maps.add(map);
+			}
+		}
+		return maps;
+	}
+
+	//返回我创建活动
+	public static ArrayList<HashMap<String,String>> getFragmentMy(){
+		ArrayList<HashMap<String, String>> maps = new ArrayList<>();
+		for (HashMap map:fragmentData) {
+			if (map.get("actionCreater").equals(userId)){
+				maps.add(map);
+			}
+		}
+		return maps;
+	}
+
+	public static String [] spiltString(String spiltdata){
+		String[] splits = spiltdata.split("_");
+		return splits;
+	}
+
+	public static ArrayList<String> arrToArrarList(String[] spiltString){
+		ArrayList<String> dataList = new ArrayList<>();
+		for (String date : spiltString){
+			dataList.add(date);
+		}
+		return dataList;
+	}
 
 	public static void display(Context context , String str) {
 		Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
@@ -106,6 +136,56 @@ public class Common {
 				}
 			}
 		});
+	}
+
+	public static String getTimeString(int[] flag){
+		int length = flag.length;
+		StringBuilder stringBuilder = new StringBuilder();
+		for (int i=0;i<length;i++) {
+			if (!noText().contains(i)){
+				stringBuilder.append(flag[i]);
+				stringBuilder.append("_");
+			}
+		}
+		if (stringBuilder.length()>1){
+			stringBuilder.deleteCharAt(stringBuilder.length()-1);
+		}
+		return stringBuilder.toString();
+	}
+
+	public static ArrayList<Integer> noText(){
+		ArrayList<Integer> noText = new ArrayList();
+		noText.add(0);
+		noText.add(1);
+		noText.add(2);
+		noText.add(3);
+		noText.add(4);
+		noText.add(8);
+		noText.add(12);
+		noText.add(16);
+		return noText;
+	}
+
+	public static ArrayList<String> initAdapterData(ArrayList<String> dataList){
+		 String [] name = {"\\", "今天", "明天", "后天",
+				"9:00", "", "", "",
+				"15:00", "", "", "",
+				"17:00", "", "", "",
+				"19:00", "", "", ""};
+		int j=0;
+		for (int i=0;i<name.length;i++){
+			if (!noText().contains(i) && !dataList.isEmpty()){
+				if (dataList.size()>=j){
+					name[i]=dataList.get(j);
+				}
+				j++;
+			}
+		}
+		ArrayList<String> arrayList = new ArrayList<>();
+		for (int i=0;i<name.length;i++){
+			arrayList.add(name[i]);
+		}
+		return arrayList;
 	}
 
 

@@ -2,19 +2,19 @@ package com.example.timekeeper.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.JSONObject
 import com.example.timekeeper.R
 import com.example.timekeeper.base.BaseActivity
 import com.example.timekeeper.dao.Action
-import com.example.timekeeper.dapater.GridViewAdapter
+import com.example.timekeeper.adapter.GridViewAdapter
 import com.example.timekeeper.util.Common
 import com.example.timekeeper.util.HttpHelper
 import com.example.timekeeper.util.URL
+import kotlinx.android.synthetic.main.detail_action_layout.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -23,7 +23,7 @@ import java.io.IOException
 /**
  * Created by Administrator on 2018/5/15.
  */
-class detailMyAddActivity :BaseActivity(),View.OnClickListener{
+class DetailMyAddActivity :BaseActivity(),View.OnClickListener{
 
     lateinit internal var select_grid : GridView
     lateinit internal var button : Button
@@ -34,11 +34,10 @@ class detailMyAddActivity :BaseActivity(),View.OnClickListener{
 
     internal var timeStyle :Int?=0
     internal var actionId :String?="0"
-    internal var creater :String?="0"
+    internal var creator :String?="0"
 
-    var dataList = ArrayList<String>()
-    val flag = intArrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-    val noText = intArrayOf(0,1,2,3,4,8,12,16)
+    lateinit var dataList: ArrayList<String>
+    lateinit var timedata: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,9 +55,46 @@ class detailMyAddActivity :BaseActivity(),View.OnClickListener{
         tv_name = findViewById(R.id.tv_name)
         tv_time = findViewById(R.id.tv_time)
         tv_introduce = findViewById(R.id.tv_introduce)
+        seekBar.isClickable = false
+        dataList = ArrayList<String>()
+        timedata = ArrayList<String>()
 
-        //adapter = GridViewAdapter(this@detailMyAddActivity,dataList)
-        //select_grid.setAdapter(adapter)
+        tv_introduce.post {
+            val ellipsisCount = tv_introduce.layout.getEllipsisCount(tv_introduce.layout.lineCount - 1)
+            if (ellipsisCount>0){
+                println("有省略")
+                tv_introduce.maxHeight = resources.displayMetrics.heightPixels
+            }else{
+                println("无省略")
+                tv_introduce.setSingleLine(true)
+            }
+        }
+
+        var indroduce = true
+        tv_introduce.setOnClickListener {
+            if (indroduce){
+                indroduce = false
+                tv_introduce.ellipsize = null
+                tv_introduce.setSingleLine(indroduce)
+            }else{
+                indroduce =true
+                tv_introduce.ellipsize = TextUtils.TruncateAt.END
+                tv_introduce.setSingleLine(indroduce)
+            }
+        }
+
+        var palce = true
+        tv_place.setOnClickListener {
+            if (palce){
+                palce = false
+                tv_place.ellipsize = null
+                tv_place.setSingleLine(palce)
+            }else{
+                palce =true
+                tv_place.ellipsize = TextUtils.TruncateAt.END
+                tv_place.setSingleLine(palce)
+            }
+        }
     }
 
     private fun initData() {
@@ -70,21 +106,29 @@ class detailMyAddActivity :BaseActivity(),View.OnClickListener{
             }
             override fun onResponse(call: Call?, response: Response?) {
                 val body = response!!.body()!!.string()
+                println("detail:$body")
                 if ("success".equals(HttpHelper.getMessage(body))){
                     //发序列化数据到Action
                     val activity = JSON.parseObject(body).getString("activity")
                     val action = JSON.parseObject(activity, Action::class.java)
                     println(action.toString())
                     runOnUiThread {
-                        creater = action.creater
+                        creator = action.creator
                         tv_name.text = action.activityName
-                        tv_time.text = action.lastingTime
+                        tv_type.text = action.activityType
+                        tv_num.text = action.activityNum
+                        tv_time.text = action.lastingTime+"小时"
+                        tv_place.text = action.activityPlace
                         tv_introduce.text = action.description
+
+                        val activitySelectDate = action.activitySelectDate
+                        val activityContinueTime = action.lastingTime
+
                         val spiltString = Common.spiltString(action.time)
                         var data = Common.arrToArrarList(spiltString)
-                        data.removeAt(12);
-                        dataList = Common.initAdapterData(data);
-                        adapter = GridViewAdapter(this@detailMyAddActivity,dataList)
+                        dataList = data
+                        timedata = Common.initAdapterData(activityContinueTime,activitySelectDate)
+                        adapter = GridViewAdapter(this@DetailMyAddActivity,dataList,timedata)
                         select_grid.setAdapter(adapter)
                         //adapter.notifyDataSetChanged()
                     }
@@ -96,9 +140,9 @@ class detailMyAddActivity :BaseActivity(),View.OnClickListener{
 
     override fun onClick(v: View?) {
         if (v == button){
-            val intent = Intent(this, actionPersoneActivity::class.java)
-            println("crater:"+creater.toString())
-            if (Common.userId!!.equals(creater)){
+            val intent = Intent(this, ActionPersoneActivity::class.java)
+            println("creator:"+creator.toString())
+            if (Common.userId!!.equals(creator)){
                 intent.putExtra("isMy",true)
             }else {
                 intent.putExtra("isMy", false)

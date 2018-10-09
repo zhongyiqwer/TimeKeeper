@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_gravity="center_vertical"
-                android:text="05月30日"
+                android:text="xx月xx日"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
             <TextView
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_gravity="center_vertical"
-                android:text="17:30 - 18:30"
+                android:text="xx:xx - xx:xx"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
 

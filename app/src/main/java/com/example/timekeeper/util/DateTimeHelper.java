@@ -117,6 +117,22 @@ public class DateTimeHelper {
 		return dateFm.format(date);
 	}
 
+	public static String getCurrentDateTime2() {
+		Date date=new Date();
+		SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFm.format(date);
+	}
+
+	public static String getTomorrowDateTime() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.get(Calendar.DAY_OF_MONTH);
+		long now = calendar.getTimeInMillis();
+		long tomorrow = now+24*60*60*1000;
+		Date date=new Date(tomorrow);
+		SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFm.format(date);
+	}
+
 	/**
 	 * 判断是否白天
 	 * @return
@@ -128,5 +144,36 @@ public class DateTimeHelper {
 		}
 		return false;
 		
+	}
+
+	//计算2个日期之间的天数差
+	public static int daysBetween(String smdate,String bdate){
+		int days = 0;
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		try {
+			cal.setTime(sdf.parse(smdate));
+			long time1 = cal.getTimeInMillis();
+			cal.setTime(sdf.parse(bdate));
+			long time2 = cal.getTimeInMillis();
+			long between_days=(time2-time1)/(1000*3600*24);
+			days = Integer.parseInt(String.valueOf(between_days));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return days+1;
+	}
+
+	public static long daytoMillis(String date){
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		long time = 0;
+		try {
+			cal.setTime(sdf.parse(date));
+			time = cal.getTimeInMillis();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return time;
 	}
 }

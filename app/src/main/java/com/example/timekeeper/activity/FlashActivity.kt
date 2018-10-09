@@ -4,6 +4,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.view.WindowManager
+import com.alibaba.fastjson.JSON
 import com.example.timekeeper.R
 import com.example.timekeeper.base.BaseActivity
 import com.example.timekeeper.module_login_reg.login
@@ -25,19 +27,9 @@ class FlashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         setContentView(R.layout.flash_activity_layout)
-
-        val intent = intent
-        val dataString = intent.dataString
-        println("dataString:"+dataString)
-        val uri = intent.data
-        println("uri:"+uri)
-        if (uri!=null && uri.scheme=="m"){
-            val parameter = uri.getQueryParameter("activityId")
-            Common.selecTimeActivityId = parameter
-            println("Id = "+Common.selecTimeActivityId)
-        }
-
+        getScanResult()
         //进行一些初始化
         val timer = Timer()
         val task = object : TimerTask(){
@@ -53,7 +45,19 @@ class FlashActivity : BaseActivity() {
 
         }
         timer.schedule(task,1400)
+    }
 
+    private fun getScanResult(){
+        val intent = intent
+        val dataString = intent.dataString
+        println("dataString:$dataString")
+        val uri = intent.data
+        println("uri:"+uri)
+        if (uri!=null && uri.scheme=="m"){
+            val parameter = uri.getQueryParameter("activityId")
+            Common.selecTimeActivityId = parameter
+            println("Id = "+Common.selecTimeActivityId)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -73,9 +77,9 @@ class FlashActivity : BaseActivity() {
 
     private fun setId(){
         val preferences = getSharedPreferences("config", 0)
-        val userId = preferences.getString("userId", null)
-        val password = preferences.getString("password", null)
-        if (userId != null && password != null){
+        val userId = preferences.getString("userId", "")
+        val password = preferences.getString("password", "")
+        if (userId.isNotEmpty() && password.isNotEmpty()){
             autoLogin(userId,password)
         }else{
             val intent = Intent(this@FlashActivity, login::class.java)
@@ -86,7 +90,7 @@ class FlashActivity : BaseActivity() {
 
     private fun autoLogin(userId:String,password:String){
 
-        if (userId != null && password != null){
+        if (userId.isNotEmpty() && password.isNotEmpty()){
             val paramHM = HashMap<String, String>()
             paramHM.set("id",userId)
             paramHM.set("password",password)
@@ -101,12 +105,17 @@ class FlashActivity : BaseActivity() {
 
                 override fun onResponse(call: Call?, response: Response?) {
                     val body = response!!.body()!!.string()
+                    println(body)
                     if ("success".equals(HttpHelper.getMessage(body))){
                         runOnUiThread {
+                            val jsonObject = JSON.parseObject(body)
+                            val userName = jsonObject.getString("userName")
+                            Common.userName = userName
+
                             Common.userId = userId
                             if (Common.selecTimeActivityId!=null) {
                                 val intent = Intent()
-                                intent.setClass(this@FlashActivity, selectTimeActivity::class.java)
+                                intent.setClass(this@FlashActivity, SelectTimeActivity::class.java)
                                 intent.putExtra("activityId", Common.selecTimeActivityId)
                                 Common.selecTimeActivityId = null
                                 startActivity(intent)

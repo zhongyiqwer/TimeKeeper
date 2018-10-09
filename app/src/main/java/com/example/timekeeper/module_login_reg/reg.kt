@@ -30,43 +30,55 @@ class reg : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.reg_layout)
         btn_reg.setOnClickListener {
-            val flag = Common.isNetworkAvailable(this)
-            if (flag == 0) {
-                Common.display(this, "请开启手机网络")
-            }else{
-                if (editV_frag_register_password.text != null &&
-                        editV_frag_register_password.text.toString().equals(editV_frag_register_password_agin.text.toString())){
-                    if (editV_frag_register_phone.text.length == 11){
-                        //Common.showProgressDialog("正在注册",this)
-                        val phone = editV_frag_register_phone.text.toString()
-                        val passWord = editV_frag_register_password.text.toString()
-                        prePostData(phone, passWord,"unknow")
-                    }else{
-                        Common.display(this,"电话号码不正确")
-                    }
+            regAcount()
+        }
+    }
+
+    fun regAcount(){
+        val flag = Common.isNetworkAvailable(this)
+        if (flag == 0) {
+            Common.display(this, "请开启手机网络")
+        }else{
+            Common.showCat(supportFragmentManager,"")
+            if (editV_frag_register_password.text != null && editV_frag_register_username.text != null &&
+                    editV_frag_register_password.text.toString().equals(editV_frag_register_password_agin.text.toString()) &&
+                    Common.verifyEamil(editV_frag_register_usermail.text.trim().toString())){
+                if (editV_frag_register_phone.text.length == 11){
+                    //Common.showProgressDialog("正在注册",this)
+                    val phone = editV_frag_register_phone.text.toString()
+                    val passWord = editV_frag_register_password.text.toString()
+                    val username = editV_frag_register_username.text.toString()
+                    val email = editV_frag_register_usermail.text.trim().toString()
+                    prePostData(phone, passWord,username,email)
                 }else{
-                    Common.display(this,"密码不正确")
+                    Common.display(this,"电话号码不正确")
                 }
+            }else{
+                Common.display(this,"密码不正确")
             }
         }
     }
 
-    fun prePostData(phone:String,password:String,username:String){
+    fun prePostData(phone:String,password:String,username:String,email:String){
         val map = HashMap<String, String>()
-        map.put("id",phone)
-        map.put("username",username)
+        map.put("userId",phone)
+        map.put("userEmail",email)
+        map.put("userName",username)
         val md5pw = EncodeAndDecode.getMD5Str(password)
-        map.put("password",md5pw)
+        map.put("userPassword",md5pw)
         HttpHelper.sendOkHttpRequest(URL.REG_URL,map, object:Callback{
             override fun onFailure(call: Call?, e: IOException?) {
-                //Common.dismissProgressDialog(this@reg)
                 runOnUiThread {
+                    Common.dissCat()
                     Common.display(this@reg,"注册失败")
                 }
             }
             override fun onResponse(call: Call?, response: Response?) {
-                if ("success".equals(HttpHelper.getMessage(response!!.body()!!.string()))){
+                val body = response!!.body()!!.string()
+                println("注册："+body)
+                if ("success".equals(HttpHelper.getMessage(body))){
                     runOnUiThread {
+                        Common.dissCat()
                         Common.display(this@reg,"注册成功")
                         val timer = Timer()
                         val task = object : TimerTask(){
@@ -77,7 +89,7 @@ class reg : BaseActivity() {
                                 startActivity(intent)
                             }
                         }
-                        timer.schedule(task,1400)
+                        timer.schedule(task,800)
                     }
                 }
             }

@@ -1,6 +1,7 @@
-package com.example.timekeeper.dapater;
+package com.example.timekeeper.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,40 +22,13 @@ public class GridViewAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<String> dataList;
+    private ArrayList<String> timeData;
 
-    private ArrayList<Integer> noText;
-    private String [] name = {"\\", "今天", "明天", "后天",
-            "9:00", "", "", "",
-            "15:00", "", "", "",
-            "17:00", "", "", "",
-            "19:00", "", "", ""};
-
-    public GridViewAdapter(Context context, ArrayList<String> dataList) {
+    public GridViewAdapter(Context context, ArrayList<String> dataList,ArrayList<String> timeData) {
         this.context = context;
         this.dataList = dataList;
+        this.timeData = timeData;
         Log.e(Common.TAG,"dataList:"+dataList.toString());
-        //initdata();
-    }
-
-    private void initdata() {
-        noText = new ArrayList();
-        noText.add(0);
-        noText.add(1);
-        noText.add(2);
-        noText.add(3);
-        noText.add(4);
-        noText.add(8);
-        noText.add(12);
-        noText.add(16);
-        int j=0;
-        for (int i=0;i<name.length;i++){
-            if (!noText.contains(i) && !dataList.isEmpty()){
-                if (dataList.size()>=j){
-                    name[i]=dataList.get(j);
-                }
-                j++;
-            }
-        }
     }
 
     private class ViewHolder{
@@ -88,23 +62,26 @@ public class GridViewAdapter extends BaseAdapter {
         }else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
+        viewHolder.textView.setText(timeData.get(position));
         switch (data){
-            case "0":viewHolder.textView.setBackgroundResource(
-                    R.color.lightGray);
+            case "0": viewHolder.textView.setTextColor(Color.WHITE);
+                viewHolder.textView.setBackgroundResource(
+                    R.color.lighterGray);
                 break;
             case "1": viewHolder.textView.setBackgroundResource(
                     R.color.white);
                     break;
-            case "2": viewHolder.textView.setBackgroundResource(
+            case "5": viewHolder.textView.setBackgroundResource(
                     R.color.bar_deepgreen);
                 break;
-            case "3": viewHolder.textView.setBackgroundResource(
+            case "4": viewHolder.textView.setBackgroundResource(
                     R.color.bar_lightgreen);
                 break;
-            case "4": viewHolder.textView.setBackgroundResource(
+            case "3": viewHolder.textView.setBackgroundResource(
                     R.color.bar_orange);
                 break;
-            case "5": viewHolder.textView.setBackgroundResource(
+            case "2": viewHolder.textView.setBackgroundResource(
                     R.color.bar_red);
                 break;
             default: viewHolder.textView.setText(data);

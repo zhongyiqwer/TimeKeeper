@@ -26,7 +26,7 @@ class ShareActivity :BaseActivity(),View.OnClickListener{
         setContentView(R.layout.activity_share)
         val activityId = intent.getStringExtra("activityId")
         val url = URL.Share_Action + "?activityId="+activityId
-        println("URL:"+url)
+        println("URL:$url")
         bitmap = CodeUtils.createImage(url, 400, 400, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher_round))
         image_content.setImageBitmap(bitmap)
         btn_shareTo.setOnClickListener(this)

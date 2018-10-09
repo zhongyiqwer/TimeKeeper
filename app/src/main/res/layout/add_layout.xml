@@ -7,123 +7,247 @@
     android:background="@drawable/user_bg"
     tools:layout_editor_absoluteY="25dp">
 
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:text="活动名称"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText_name"
+        app:layout_constraintEnd_toStartOf="@+id/editText_name"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <EditText
         android:id="@+id/editText_name"
         style="@style/Widget.AppCompat.EditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="15dp"
         android:ems="10"
         android:hint="活动名称"
         android:inputType="text"
         android:singleLine="true"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView14"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editText_time"
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="活动类型"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/spinner_type"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <org.angmarch.views.NiceSpinner
+        android:id="@+id/spinner_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        app:arrowTint="@color/orange"
+        android:backgroundTint="@color/trans"
+        app:layout_constraintTop_toBottomOf="@+id/editText_name"
+        app:layout_constraintStart_toEndOf="@+id/textView15"
+        app:textTint="@color/orange" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="活动规模"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/spinner_num"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <org.angmarch.views.NiceSpinner
+        android:id="@+id/spinner_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="16sp"
+        app:arrowTint="@color/orange"
+        app:textTint="@color/orange"
+        android:backgroundTint="@color/trans"
+        app:layout_constraintStart_toStartOf="@+id/spinner_type"
+        app:layout_constraintTop_toBottomOf="@+id/textView15"/>
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="活动地点"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/edit_action_place"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <AutoCompleteTextView
+        android:id="@+id/edit_action_place"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="5dp"
         android:ems="10"
-        android:hint="活动预计所需时间"
-        android:inputType="number"
-        android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@+id/editText_des"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:hint="活动地点"
+        android:inputType="text"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/editText_name"
+        app:layout_constraintTop_toBottomOf="@+id/textView17"
+        app:layout_constraintStart_toStartOf="@+id/editText_name" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="活动介绍"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editText_des"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/editText_des"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="11dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginTop="5dp"
         android:ems="10"
-        android:hint="活动描述"
+        android:hint="活动介绍"
         android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/button_time3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/editText_name"
+        app:layout_constraintStart_toStartOf="@+id/editText_name"
+        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="活动持续时间"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_time" />
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
-    <Button
-        android:id="@+id/button_time1"
+    <TextView
+        android:id="@+id/textView22"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:text="时间模板1"
-        app:layout_constraintStart_toStartOf="@+id/editText_des"
-        app:layout_constraintTop_toBottomOf="@+id/editText_des" />
+        android:layout_marginEnd="100dp"
+        android:text="日期选择"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView21"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <Button
-        android:id="@+id/button_time2"
+    <org.angmarch.views.NiceSpinner
+        android:id="@+id/spinner_timeSelection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:text="时间模板2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_des" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:textSize="16sp"
+        app:arrowTint="@color/orange"
+        android:backgroundTint="@color/trans"
+        app:layout_constraintEnd_toEndOf="@+id/textView21"
+        app:layout_constraintStart_toStartOf="@+id/textView21"
+        app:layout_constraintTop_toBottomOf="@+id/textView21"
+        app:textTint="@color/orange" />
 
-    <Button
-        android:id="@+id/button_time3"
+    <org.angmarch.views.NiceSpinner
+        android:id="@+id/spinner_dateSelection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="175dp"
-        android:text="自定义"
-        app:layout_constraintEnd_toEndOf="@+id/editText_des"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="8dp"
+        android:textSize="16sp"
+        app:arrowTint="@color/orange"
+        android:backgroundTint="@color/trans"
+        app:layout_constraintEnd_toEndOf="@+id/textView22"
+        app:layout_constraintStart_toStartOf="@+id/textView22"
+        app:layout_constraintTop_toBottomOf="@+id/textView22"
+        app:textTint="@color/orange" />
 
     <include
         android:id="@+id/include_grid_view"
         layout="@layout/add_activity_gridview_layout"
         android:layout_width="0dp"
-        android:layout_height="225dp"
-        android:layout_marginTop="12dp"
+        android:layout_height="230dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_timeSelection"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_time2" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
-        android:id="@+id/IB_can"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include_grid_view"
-        android:background="@drawable/btn_select_green" />
-
-    <ImageButton
-        android:id="@+id/IB_nocan"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginTop="8dp"
+    <LinearLayout
+        android:id="@+id/btn_liner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include_grid_view"
-        android:background="@drawable/btn_big_red"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_grid_view">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/IB_can"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/btn_select_green" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="可选择"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/IB_nocan"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/btn_red" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="不可选"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/bt_fabu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="20dp"
         android:text="发  布"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include_grid_view" />
+        android:background="@drawable/bg_btn"
+        app:layout_constraintTop_toBottomOf="@+id/include_grid_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </android.support.constraint.ConstraintLayout>

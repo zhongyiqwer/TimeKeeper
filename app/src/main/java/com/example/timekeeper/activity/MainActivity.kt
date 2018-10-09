@@ -3,7 +3,6 @@ package com.example.timekeeper.activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
@@ -12,27 +11,20 @@ import android.view.View
 import com.ashokvarma.bottomnavigation.BottomNavigationBar
 import com.ashokvarma.bottomnavigation.BottomNavigationItem
 import com.example.timekeeper.R
-import com.example.timekeeper.activity.AddActivity
 import com.example.timekeeper.base.BaseActivity
-import com.example.timekeeper.fragment.allActionFragment
+import com.example.timekeeper.fragment.AllActionFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
-import android.R.id.tabs
-import android.content.ContentResolver
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.provider.MediaStore
+import android.view.KeyEvent
+import android.widget.TextView
 import com.uuzuche.lib_zxing.activity.CaptureActivity
-import java.util.ArrayList
 import android.widget.Toast
+import com.example.timekeeper.fragment.RecommendFragment
 import com.example.timekeeper.module_login_reg.login
 import com.example.timekeeper.util.Common
 import com.example.timekeeper.util.ImageUtil
 import com.uuzuche.lib_zxing.activity.CodeUtils
-
-
 
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener ,BottomNavigationBar.OnTabSelectedListener{
@@ -42,10 +34,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val REQUEST_IMAGE:Int=2
     }
 
-    lateinit internal var allFragment :allActionFragment
-    lateinit internal var allFragment1 :allActionFragment
-    lateinit internal var allFragment2 :allActionFragment
-    lateinit internal var allFragment3 :allActionFragment
+    lateinit internal var allFragment :AllActionFragment
+    lateinit internal var noDoneFragment :AllActionFragment
+    lateinit internal var myCreateFragment :AllActionFragment
+    lateinit internal var recommendFragment:RecommendFragment
 
     lateinit internal var bottomNavigationBar: BottomNavigationBar
     internal var lastSelectedPosition = 0
@@ -67,11 +59,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         //drawer_layout的进场与退场动画
         val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+                this, drawer_layout, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close)
+
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+        val headerView = nav_view.getHeaderView(0)
+        val name = headerView.findViewById<TextView>(R.id.user_name)
+        //val email = headerView.findViewById<TextView>(R.id.user_emil)
+        //val image = headerView.findViewById<TextView>(R.id.user_image)
+        if (Common.userName != null){
+            println(Common.userName)
+            name.text = Common.userName
+        }
     }
 
     override fun onBackPressed() {
@@ -90,7 +93,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
         }
     }
 
@@ -113,7 +118,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 edit.commit()
             }
             R.id.nav_manage -> {
-
+                val intent = Intent(this, ChangeMyActivity::class.java)
+                startActivity(intent)
+                //finish()
             }
             R.id.nav_share -> {
                 val edit = getSharedPreferences("config", 0).edit()
@@ -133,10 +140,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun initBottomNavi(){
-        allFragment = allActionFragment.newInstance()
-        allFragment1 = allActionFragment.newInstance()
-        allFragment2 = allActionFragment.newInstance()
-        allFragment3 = allActionFragment.newInstance()
+        allFragment = AllActionFragment.newInstance()
+        noDoneFragment = AllActionFragment.newInstance()
+        myCreateFragment = AllActionFragment.newInstance()
+        recommendFragment = RecommendFragment()
         bottomNavigationBar = findViewById<BottomNavigationBar>(R.id.bottomNavigationBar)
         bottomNavigationBar.setTabSelectedListener(this)
         bottomNavigationBar.clearAll()
@@ -146,7 +153,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 .addItem(BottomNavigationItem(R.drawable.ic_all_activity, "所有任务").setActiveColorResource(R.color.orange))
                 .addItem(BottomNavigationItem(R.drawable.ic_nodone_activity, "未完成").setActiveColorResource(R.color.teal))
                 .addItem(BottomNavigationItem(R.drawable.ic_myadd_activity, "我创建").setActiveColorResource(R.color.blue))
-                .addItem(BottomNavigationItem(R.drawable.ic_sharefile, "文件共享").setActiveColorResource(R.color.brown))
+                .addItem(BottomNavigationItem(R.drawable.ic_sharefile, "智能推荐").setActiveColorResource(R.color.brown))
                 .initialise()
         bottomNavigationBar.selectTab(if (lastSelectedPosition > 3) 3 else lastSelectedPosition, true)
 
@@ -154,10 +161,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun setDefaultFragment() {
+
         supportFragmentManager.beginTransaction().apply {
             val bundle = Bundle()
             bundle.putString("fragmentType","0")
             allFragment.setArguments(bundle)
+            toolbar.title = "TimeKeeper"
+            fab.visibility = View.VISIBLE
             replace(R.id.fragment_contain, allFragment)
         }.commitAllowingStateLoss()
     }
@@ -181,19 +191,26 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 0 -> {  val bundle = Bundle()
                         bundle.putString("fragmentType","0")
                         allFragment.setArguments(bundle)
+                        toolbar.title = "TimeKeeper"
+                        fab.visibility = View.VISIBLE
                         replace(R.id.fragment_contain, allFragment)}
                 1 -> {val bundle = Bundle()
                       bundle.putString("fragmentType","1")
-                      allFragment1.setArguments(bundle)
-                      replace(R.id.fragment_contain, allFragment1)}
+                    noDoneFragment.setArguments(bundle)
+                    toolbar.title = "TimeKeeper"
+                    fab.visibility = View.VISIBLE
+                      replace(R.id.fragment_contain, noDoneFragment)}
                 2 -> {val bundle = Bundle()
                       bundle.putString("fragmentType","2")
-                      allFragment2.setArguments(bundle)
-                      replace(R.id.fragment_contain, allFragment2)}
+                    myCreateFragment.setArguments(bundle)
+                    toolbar.title = "TimeKeeper"
+                    fab.visibility = View.VISIBLE
+                      replace(R.id.fragment_contain, myCreateFragment)}
                 3 -> { val bundle = Bundle()
-                       bundle.putString("fragmentType","3")
-                       allFragment3.setArguments(bundle)
-                       replace(R.id.fragment_contain, allFragment3)}
+                    recommendFragment.setArguments(bundle)
+                    toolbar.title = "智能推荐"
+                    fab.visibility = View.GONE
+                       replace(R.id.fragment_contain, recommendFragment)}
             }
         }.commitAllowingStateLoss()
     }
@@ -213,7 +230,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                    val s = split[1]
                    println("id:"+s)
 
-                   val intent = Intent(this@MainActivity, selectTimeActivity::class.java)
+                   val intent = Intent(this@MainActivity, SelectTimeActivity::class.java)
                    intent.putExtra("activityId",s)
                    startActivity(intent)
                    finish()
@@ -236,7 +253,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         val s = split[1]
                         println("id:"+s)
 
-                        val intent = Intent(this@MainActivity, selectTimeActivity::class.java)
+                        val intent = Intent(this@MainActivity, SelectTimeActivity::class.java)
                         intent.putExtra("activityId",s)
                         startActivity(intent)
                         finish()
@@ -249,5 +266,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
             }
         }
+    }
+
+    private var firstTime:Long=0
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode === KeyEvent.KEYCODE_BACK && event!!.getAction() === KeyEvent.ACTION_DOWN) {
+            val secondTime = System.currentTimeMillis()
+            if (secondTime - firstTime > 2000) {
+                Toast.makeText(this@MainActivity, "再按一次退出程序", Toast.LENGTH_SHORT).show()
+                firstTime = secondTime
+                return true
+            } else {
+                System.exit(0)
+            }
+        }
+
+        return super.onKeyDown(keyCode, event)
     }
 }

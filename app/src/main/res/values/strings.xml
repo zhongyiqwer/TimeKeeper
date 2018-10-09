@@ -5,4 +5,48 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string-array name="spinnarr_type">
+        <item>学术会议</item>
+        <item>聚餐娱乐</item>
+        <item>小组讨论</item>
+    </string-array>
+    <string-array name="spinnarr_num">
+        <item>1~10人</item>
+        <item>11~30人</item>
+        <item>100~1000人</item>
+        <item>1000人以上</item>
+    </string-array>
+    <string-array name="spinnarr_tiem">
+        <item>小于24小时</item>
+        <item>24~72小时</item>
+        <item>72小时+</item>
+    </string-array>
+    <string-array name="spinnarr_tiemSelection">
+        <item>1小时</item>
+        <item>1.5小时</item>
+        <item>2小时</item>
+        <item>3小时</item>
+        <item>4小时</item>
+        <item>6小时</item>
+        <item>12小时</item>
+        <item>24小时/一天</item>
+    </string-array>
+    <string-array name="spinnarr_dateSelection">
+        <item>今天</item>
+        <item>今天及明天</item>
+        <item>自定义</item>
+    </string-array>
+
+    <string name="action_name">活动名称</string>
+    <string name="action_style">活动类型</string>
+    <string name="action_scale">活动规模</string>
+    <string name="action_time">持续时间</string>
+    <string name="action_place">活动地点</string>
+    <string name="action_des">活动介绍</string>
+
+    <string name="action_timeSpace_selection">时间粒度选择</string>
+    <string name="action_date_selection">日期选择</string>
+
+    <string name="fragment_reconment">智能推荐</string>
 </resources>

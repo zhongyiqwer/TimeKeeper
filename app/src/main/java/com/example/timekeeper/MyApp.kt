@@ -1,6 +1,9 @@
 package com.example.timekeeper
 
 import android.app.Application
+import com.baidu.mapapi.CoordType
+import com.baidu.mapapi.SDKInitializer
+import com.example.timekeeper.util.CrashHandler
 import com.uuzuche.lib_zxing.activity.ZXingLibrary
 
 /**
@@ -9,6 +12,12 @@ import com.uuzuche.lib_zxing.activity.ZXingLibrary
 class MyApp :Application(){
     override fun onCreate() {
         super.onCreate()
-        ZXingLibrary.initDisplayOpinion(this)
+        //未捕获异常处理
+        //CrashHandler.getInstance().init(applicationContext)
+        //百度地图
+        SDKInitializer.initialize(applicationContext)
+        SDKInitializer.setCoordType(CoordType.BD09LL)
+        //二维码扫描
+        ZXingLibrary.initDisplayOpinion(applicationContext)
     }
 }

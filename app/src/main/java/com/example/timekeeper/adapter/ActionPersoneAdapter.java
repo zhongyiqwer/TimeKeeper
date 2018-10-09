@@ -1,8 +1,6 @@
-package com.example.timekeeper.dapater;
+package com.example.timekeeper.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +14,10 @@ import android.widget.TextView;
 import com.example.timekeeper.R;
 import com.example.timekeeper.listener.LevelChange;
 import com.example.timekeeper.util.Common;
-import com.example.timekeeper.util.HttpHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2018/5/19.
@@ -92,6 +88,8 @@ public class ActionPersoneAdapter extends BaseAdapter {
             holder.spinner.setTag(position);
             if (isMy){
                 holder.spinner.setOnItemSelectedListener(new ItemClickSelectListener(holder,position));
+            }else {
+                holder.spinner.setClickable(false);
             }
 
             convertView.setTag(holder);
@@ -99,7 +97,7 @@ public class ActionPersoneAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_menu_share));
+        //holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_launcher));
 
         if (isMy){
             if (map.get("userId").equals(Common.userId)){
@@ -107,10 +105,17 @@ public class ActionPersoneAdapter extends BaseAdapter {
                 holder.spinner.setSelection(2);
                 lastLevel.put(position,2);
                 return convertView;
+            }else {
+                holder.name.setText(map.get("userName"));
+            }
+        }else {
+            if (map.get("userId").equals(Common.userId)){
+                holder.name.setText("自己");
+            }else {
+                holder.name.setText(map.get("userName"));
             }
         }
 
-        holder.name.setText(map.get("userName"));
         holder.spinner.setSelection(Integer.parseInt(map.get("userLevel"))-1);
         lastLevel.put(position,Integer.parseInt(map.get("userLevel"))-1);
 

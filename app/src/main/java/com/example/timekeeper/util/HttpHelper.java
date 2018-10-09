@@ -2,7 +2,6 @@ package com.example.timekeeper.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -15,14 +14,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 
 
@@ -34,8 +30,11 @@ public class HttpHelper {
 
 
     public static String getMessage(String response){
-        JSONObject jsonObject = JSON.parseObject(response);
-        String message = jsonObject.getString("message");
+        String message = "";
+        if (response!=null && !response.isEmpty()){
+            JSONObject jsonObject = JSON.parseObject(response);
+            message = jsonObject.getString("message");
+        }
         return message;
     }
 

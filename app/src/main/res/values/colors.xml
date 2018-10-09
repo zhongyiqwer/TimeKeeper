@@ -34,6 +34,8 @@
     <color name="lighterGray">#e3e3e3</color>
     <!-- 超浅灰 -->
 
+    <color name="trans">#00FFFFFF</color>
+
     <color name="textGray">#ABAAAA</color>
     <!-- 文字灰 -->
     <color name="bgColor">#f7f7f7</color>

@@ -9,15 +9,15 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ListView
 import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.JSONException
 import com.example.timekeeper.R
 import com.example.timekeeper.activity.ShareActivity
-import com.example.timekeeper.activity.detailMyAddActivity
-import com.example.timekeeper.dapater.actionPlayAdapter
+import com.example.timekeeper.activity.DetailMyAddActivity
+import com.example.timekeeper.adapter.actionPlayAdapter
 import com.example.timekeeper.listener.ShareListener
 import com.example.timekeeper.util.Common
 import com.example.timekeeper.util.HttpHelper
 import com.example.timekeeper.util.URL
-import kotlinx.android.synthetic.main.action_play_adapter_item.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -28,23 +28,23 @@ import kotlin.collections.HashMap
 /**
  * Created by Administrator on 2018/5/17.
  */
-class allActionFragment : Fragment() ,ShareListener,AdapterView.OnItemClickListener{
+class AllActionFragment : Fragment() ,ShareListener,AdapterView.OnItemClickListener{
 
     lateinit internal var dataList: ArrayList<HashMap<String,String>>
     lateinit internal var listView:ListView
     lateinit internal var adapter:actionPlayAdapter
 
    companion object {
-       fun newInstance():allActionFragment{
-           return allActionFragment()
+       fun newInstance():AllActionFragment{
+           return AllActionFragment()
        }
    }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragmant_all_action, null)
-        var fragmentType = getArguments().get("fragmentType")
-        println("type="+fragmentType)
+        var fragmentType = getArguments()!!.get("fragmentType")
+        println("type=$fragmentType")
         listView = view.findViewById<ListView>(R.id.list_view)
         if (fragmentType == "0"){
             dataList = ArrayList<HashMap<String,String>>()
@@ -62,11 +62,6 @@ class allActionFragment : Fragment() ,ShareListener,AdapterView.OnItemClickListe
             val adapter2 = actionPlayAdapter(activity, dataList)
             adapter2.setShareListener(this)
             listView.setAdapter(adapter2)
-        }else if(fragmentType == "3"){
-            dataList = Common.getFragmentData()
-            val adapter3 = actionPlayAdapter(activity, dataList)
-            adapter3.setShareListener(this)
-            listView.setAdapter(adapter3)
         }
         listView.setOnItemClickListener(this)
         return view
@@ -83,24 +78,37 @@ class allActionFragment : Fragment() ,ShareListener,AdapterView.OnItemClickListe
             }
             override fun onResponse(call: Call?, response: Response?) {
                 val body = response!!.body()!!.string()
-                println(body)
-                if("success".equals(HttpHelper.getMessage(body))){
-                    activity.runOnUiThread {
-                        val jsonObject = JSON.parseObject(body)
-                        val array = jsonObject.getString("array")
+                println("allAction: $body")
+                if("success" == HttpHelper.getMessage(body)){
+                    activity!!.runOnUiThread {
+                        try {
+                            val jsonObject = JSON.parseObject(body)
+                            val array = jsonObject.getString("array")
 
-                        val parseArray = JSON.parseArray(array)
-                        val size = parseArray.size-1
-                        for (i in 0..size){
-                            val parseObject = parseArray.getJSONObject(i)
-                            val hashMap = HashMap<String, String>()
-                            hashMap.put("actionId",parseObject.getString("activityID"))
-                            hashMap.put("actionName",parseObject.getString("activityName"))
-                            hashMap.put("actionData",parseObject.getString("time_compute"))
-                            hashMap.put("actionState",parseObject.getString("activityState"))
-                            hashMap.put("actionCreater",parseObject.getString("activityCreater"))
-                            dataList.add(hashMap)
-                            adapter.notifyDataSetChanged()
+                            val parseArray = JSON.parseArray(array)
+                            println("parseArray="+parseArray.size)
+                            val size = parseArray.size-1
+                            if (size>=0){
+                                for (i in 0..size){
+                                    val parseObject = parseArray.getJSONObject(i)
+                                    val hashMap = HashMap<String, String>()
+                                    hashMap["actionId"] = parseObject.getString("activityId")
+                                    hashMap["actionName"] = parseObject.getString("activityName")
+                                    hashMap["actionData"] = parseObject.getString("activityTimeCompute")
+                                    hashMap["actionState"] = parseObject.getString("activityState")
+                                    hashMap["actionCreater"] = parseObject.getString("activityCreator")
+                                    hashMap["actionContinueTime"] = parseObject.getString("activityContinueTime")
+                                    hashMap["actionSelectDate"] = parseObject.getString("activitySelectDate")
+                                    hashMap["actionPlace"] = parseObject.getString("activityPlace")
+                                    hashMap["actionDescription"] = parseObject.getString("activityDescription")
+                                    dataList.add(hashMap)
+                                    adapter.notifyDataSetChanged()
+                                }
+                            }
+                        }catch (e :JSONException){
+                           println(e.message)
+                        }finally {
+
                         }
                         Common.putFragmentData(dataList)
                     }
@@ -111,34 +119,25 @@ class allActionFragment : Fragment() ,ShareListener,AdapterView.OnItemClickListe
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        /*listView.setOnItemClickListener { parent, view, position, id ->
-            val intent = Intent(activity, detailMyAddActivity::class.java)
-            //val actionId = adapter.getItem(position).get("actionId")
-            val actionId = dataList[position].get("actionId")
-            intent.putExtra("activityId",actionId)
-            startActivity(intent)
-            activity.finish()
-        }*/
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        println("allFragment的position = "+position)
-        val actionId = dataList[position].get("actionId")
-        val intent = Intent(activity, detailMyAddActivity::class.java)
+        println("allFragment的position = $position")
+        val actionId = dataList[position]["actionId"]
+        val intent = Intent(activity, DetailMyAddActivity::class.java)
         //val actionId = adapter.getItem(position).get("actionId")
         intent.putExtra("activityId",actionId)
         startActivity(intent)
-        activity.finish()
+        activity!!.finish()
     }
 
 
     override fun btnShareCall(view: View?) {
         val position = view!!.getTag()
-        val activityId = dataList[position as Int].get("actionId")
-        println("allFragment的Id = "+activityId)
+        val activityId = dataList[position as Int]["actionId"]
+        println("allFragment的Id = $activityId")
         val intent = Intent(activity, ShareActivity::class.java)
         intent.putExtra("activityId",activityId)
         startActivity(intent)
-        //activity.finish()
     }
 }

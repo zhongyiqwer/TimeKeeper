@@ -2,6 +2,7 @@ package com.example.timekeeper.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
 import android.widget.*
@@ -9,11 +10,12 @@ import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONArray
 import com.example.timekeeper.R
 import com.example.timekeeper.base.BaseActivity
-import com.example.timekeeper.dapater.ActionPersoneAdapter
+import com.example.timekeeper.adapter.ActionPersoneAdapter
 import com.example.timekeeper.listener.LevelChange
 import com.example.timekeeper.util.Common
 import com.example.timekeeper.util.HttpHelper
 import com.example.timekeeper.util.URL
+import kotlinx.android.synthetic.main.take_member_layout.*
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -25,7 +27,7 @@ import kotlin.collections.HashMap
 /**
  * Created by Administrator on 2018/5/18.
  */
-class actionPersoneActivity : BaseActivity() ,AdapterView.OnItemClickListener,LevelChange{
+class ActionPersoneActivity : BaseActivity() ,AdapterView.OnItemClickListener,LevelChange{
 
     lateinit internal var listView: ListView
     lateinit internal var textView3: TextView
@@ -33,6 +35,7 @@ class actionPersoneActivity : BaseActivity() ,AdapterView.OnItemClickListener,Le
     lateinit internal var image: ImageView
 
     lateinit internal var adpater: ActionPersoneAdapter
+    lateinit internal var findAdpater: ActionPersoneAdapter
 
     internal var actionId :String?="0"
     internal var isMy :Boolean?=false
@@ -112,9 +115,41 @@ class actionPersoneActivity : BaseActivity() ,AdapterView.OnItemClickListener,Le
 
     private fun initview() {
         listView = findViewById(R.id.listView)
-        textView3 = findViewById(R.id.textView3)
+        //textView3 = findViewById(R.id.textView3)
+        var findList = ArrayList<HashMap<String, String>>()
+        findAdpater = ActionPersoneAdapter(this,findList,isMy!!)
+        findAdpater.setLevelChangeListener(this)
+        searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (TextUtils.isEmpty(query)){
+                    Toast.makeText(this@ActionPersoneActivity, "请输入查找内容！", Toast.LENGTH_SHORT).show()
+                    listView.adapter = adpater
+                    adpater.notifyDataSetChanged()
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (TextUtils.isEmpty(newText)){
+                    listView.adapter = adpater
+                    adpater.notifyDataSetChanged()
+                }else{
+                    findList.clear()
+                    for (i in dataList.indices){
+                        val name = dataList[i].get("userName")
+                        if (Common.contains(name,newText)){
+                            findList.add(dataList[i])
+                        }
+                    }
+                    listView.adapter = findAdpater
+                    findAdpater.notifyDataSetChanged()
+                }
+                return true
+            }
+        })
     }
 
+    //listview的点击事件
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
     }
@@ -127,9 +162,6 @@ class actionPersoneActivity : BaseActivity() ,AdapterView.OnItemClickListener,Le
                 val jsonString = JSONArray.toJSONString(userIdList)
                 userLevel.put("userIds",jsonString)
                 postLevelChange()
-                /*val intent = Intent(this, detailMyAddActivity::class.java)
-                startActivity(intent)
-                finish()*/
             }
         }
 
@@ -140,15 +172,15 @@ class actionPersoneActivity : BaseActivity() ,AdapterView.OnItemClickListener,Le
         HttpHelper.sendOkHttpRequest(URL.Change_Level,userLevel, object :Callback{
             override fun onFailure(call: Call?, e: IOException?) {
                 runOnUiThread {
-                    Common.display(this@actionPersoneActivity,"更改权限失败")
+                    Common.display(this@ActionPersoneActivity,"更改权限失败")
                 }
             }
 
             override fun onResponse(call: Call?, response: Response?) {
                 if("success".equals(HttpHelper.getMessage(response!!.body()!!.string()))){
                     runOnUiThread {
-                        Common.display(this@actionPersoneActivity,"更改权限成功")
-                        val intent = Intent(this@actionPersoneActivity, detailMyAddActivity::class.java)
+                        Common.display(this@ActionPersoneActivity,"更改权限成功")
+                        val intent = Intent(this@ActionPersoneActivity, DetailMyAddActivity::class.java)
                         startActivity(intent)
                         finish()
                     }

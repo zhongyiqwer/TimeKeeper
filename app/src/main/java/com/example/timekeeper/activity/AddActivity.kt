@@ -1,6 +1,8 @@
 package com.example.timekeeper.activity
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -17,11 +19,13 @@ import com.baidu.mapapi.search.sug.SuggestionResult
 import com.baidu.mapapi.search.sug.SuggestionSearch
 import com.baidu.mapapi.search.sug.SuggestionSearchOption
 import com.example.timekeeper.R
+import com.example.timekeeper.adapter.GridViewAdapter
 import com.example.timekeeper.base.BaseActivity
 import com.example.timekeeper.util.Common
 import com.example.timekeeper.util.DateTimeHelper
 import com.example.timekeeper.util.HttpHelper
 import com.example.timekeeper.util.URL
+import com.example.timekeeper.widget.TimePickDialogUtil
 import kotlinx.android.synthetic.main.add_activity_gridview_layout.*
 import kotlinx.android.synthetic.main.add_layout.*
 import okhttp3.Call
@@ -34,13 +38,14 @@ import java.util.*
 /**
  * Created by ZJX on 2018/5/7.
  */
-class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultListener{
+class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultListener,
+        AdapterView.OnItemClickListener{
 
     val dataList = ArrayList<Map<String, String>>()
 
     var flag :Array<Int> = Array(24,{0})
 
-    internal var select_type : Int?=0
+    internal var select_type : Int?=3
     lateinit var mSuggestionSearch: SuggestionSearch
     lateinit var suggest:MutableList<String>
     lateinit var sugAdapter:ArrayAdapter<String>
@@ -49,8 +54,15 @@ class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultLi
 
     lateinit var adapter:SimpleAdapter
 
+    lateinit var adapter1:GridViewAdapter
+    lateinit var dataList1: ArrayList<String>
+    lateinit var timedata: ArrayList<String>
+
     private var mSpinnerType = ""
     private var mSpinnerNum = ""
+
+    private var startDate = DateTimeHelper.getCurrentDateTime2()
+    private var endDate = DateTimeHelper.getCurrentDateTime2()
 
     private var mTimeSelectType = 0
     private var mDateSelectType = 0
@@ -135,7 +147,8 @@ class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultLi
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 mTimeSelectType = position
-                changeGridData()
+                //changeGridData()
+                getData()
             }
         })
 
@@ -146,9 +159,31 @@ class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultLi
         spinner_dateSelection.setOnItemSelectedListener(object :AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                 mDateSelectType = position
-                changeGridData()
+                if (position==2){
+                    val pickDialogUtil = TimePickDialogUtil(this@AddActivity, "")
+                    pickDialogUtil.setDatePickList(object :TimePickDialogUtil.DatePickList{
+
+                        override fun onPost(isPost: Boolean, start: String, end: String) {
+                            if (isPost) {
+                                startDate = start
+                                endDate = end
+                                spinner_dateSelection.selectedIndex = 2
+                                val split = startDate.split("-")
+                                val split1 = endDate.split("-")
+                                spinner_dateSelection.text = "${split[1]}.${split[2]}~${split1[1]}.${split1[2]}"
+                            }else{
+                                startDate = DateTimeHelper.getCurrentDateTime2()
+                                endDate = DateTimeHelper.getCurrentDateTime2()
+                            }
+                            getData()
+                        }
+                    })
+                    pickDialogUtil.dateTimePicKDialog()
+                }else{
+                    getData()
+                }
             }
         })
 
@@ -156,7 +191,7 @@ class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultLi
         val from = arrayOf("text")
         val to = intArrayOf(R.id.grid_tv)
 
-        adapter = SimpleAdapter(this,dataList,R.layout.gridview_item_layout,from,to)
+       /* adapter = SimpleAdapter(this,dataList,R.layout.gridview_item_layout,from,to)
         gridView2.setAdapter(adapter)
         gridView2.setOnItemClickListener { parent, view, position, id ->
             if (flag[position] == 0){
@@ -184,9 +219,33 @@ class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultLi
                     view!!.setBackgroundResource(R.color.white)
                 }
             }
-        }
+        }*/
 
-        changeGridData()
+        //changeGridData()
+
+        dataList1 = ArrayList()
+        timedata = ArrayList()
+        adapter1 = GridViewAdapter(this,dataList1,timedata)
+        gridView2.setAdapter(adapter1)
+        gridView2.setOnItemClickListener(this)
+        getData()
+    }
+
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (adapter1.getItem(position) != "0"){
+            println(flag[position].toString()+" "+select_type.toString())
+
+            if (select_type == 3){
+                flag[position] =1
+                dataList1[position] = "5"
+            }
+
+            if (select_type == 0){
+                flag[position] =0
+                dataList1[position] = "2"
+            }
+            adapter1.notifyDataSetChanged()
+        }
     }
 
     private fun startLocate() {
@@ -210,13 +269,88 @@ class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultLi
 
     }
 
+    private fun getData(){
+        dataList1.clear()
+        timedata.clear()
+
+        var time = 1.0
+        var date = 24
+        if(mDateSelectType==0){
+            date = 24
+        }else if(mDateSelectType==1){
+            date = 48
+        }else if(mDateSelectType == 2){
+            val daysBetween = DateTimeHelper.daysBetween(startDate, endDate)
+            date = 24*daysBetween
+        }
+
+        if (mTimeSelectType==1){
+            time = 1.5
+        }else if (mTimeSelectType==2){
+            time = 2.0
+        }else if (mTimeSelectType==3){
+            time = 3.0
+        }else if (mTimeSelectType==4){
+            time = 4.0
+        }else if (mTimeSelectType==5){
+            time = 6.0
+        }else if(mTimeSelectType == 6){
+            time = 12.0
+        }else if(mTimeSelectType == 7){
+            time = 24.0
+        }
+        if (mTimeSelectType<8){
+            date = date - time.toInt()
+            flag = Array(date+1,{0})
+        }
+
+        val arr = this.resources.getStringArray(R.array.spinnarr_tiemSelection)
+        val activityContinueTime = arr[mTimeSelectType].split("小时")[0]
+
+        var activitySelectDate = DateTimeHelper.getCurrentDateTime2()+"_"+DateTimeHelper.getCurrentDateTime2()
+        if(mDateSelectType==1){
+            activitySelectDate = DateTimeHelper.getCurrentDateTime2()+"_"+DateTimeHelper.getTomorrowDateTime()
+        }else if(mDateSelectType==2){
+            activitySelectDate = startDate+"_"+endDate
+        }
+        println("activitySelectDate= $activitySelectDate")
+        val dateTime3 = DateTimeHelper.getCurrentDateTime3()
+        val split = dateTime3.split(" ")
+
+        val s = activitySelectDate.split("_")[0]
+        if (DateTimeHelper.daysBetween(split[0],s)>1){
+            for (i in flag.indices){
+                dataList1.add("1")
+            }
+        }else{
+            val hour = split[1].toInt()
+            println("hour =  $hour")
+            println("flagSize= ${flag.size}")
+            for (i in flag.indices){
+                if (i<=hour){
+                    dataList1.add("0")
+                }else{
+                    dataList1.add("1")
+                }
+            }
+        }
+
+        println(activityContinueTime)
+        println(activitySelectDate)
+        timedata = Common.initAdapterData(activityContinueTime, activitySelectDate)
+        println("timeData = $timedata")
+        adapter1.setTimeData(timedata)
+        adapter1.notifyDataSetChanged()
+    }
+
     private fun changeGridData(){
 
+        println("flagSize=${flag.size}")
         for (i in flag.indices){
             flag[i] = 0
             val view = gridView2.getChildAt(i)
             if (view!=null){
-                view!!.setBackgroundResource(R.color.white)
+                view.setBackgroundResource(R.color.white)
             }
         }
         dataList.clear()
@@ -274,20 +408,19 @@ class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultLi
                 dataList.add(data)
             }*/
         }
-
         adapter.notifyDataSetChanged()
     }
 
     override fun onClick(v: View?) {
        //点击事件
         if (v == IB_can){
-            select_type = 0
+            select_type = 3
             IB_can.background = resources.getDrawable(R.drawable.btn_select_green)
             IB_nocan.background = resources.getDrawable(R.drawable.btn_big_red)
         }
 
         if (v == IB_nocan){
-            select_type = 1
+            select_type = 0
             IB_nocan.background = resources.getDrawable(R.drawable.btn_select_red)
             IB_can.background = resources.getDrawable(R.drawable.btn_deepgreen)
         }
@@ -321,7 +454,7 @@ class AddActivity : BaseActivity() ,View.OnClickListener,OnGetSuggestionResultLi
             if(mDateSelectType==1){
                 activitySelectDate = DateTimeHelper.getCurrentDateTime2()+"_"+DateTimeHelper.getTomorrowDateTime()
             }else if(mDateSelectType==2){
-                //todo
+                activitySelectDate = startDate+"_"+endDate
             }
             map.put("activitySelectDate",activitySelectDate)
             //把flag中的2全替换为0

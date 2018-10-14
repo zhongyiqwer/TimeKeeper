@@ -117,6 +117,7 @@ class login : BaseActivity() ,View.OnClickListener{
                     }
                 }else{
                     Looper.prepare()
+                    Common.dissCat()
                     Common.display(this@login, "登录失败")
                     Looper.loop()
                 }

@@ -72,6 +72,9 @@ class RecommendFragment:Fragment(),AdapterView.OnItemSelectedListener,OnGetPoiSe
 
         //获取活动的名称
         val linkedList = LinkedList<String>()
+        if (arrayList.isEmpty()){
+            return
+        }
         for (map in arrayList){
             println(map.toString())
             linkedList.add(map["actionName"]!!)
@@ -92,6 +95,9 @@ class RecommendFragment:Fragment(),AdapterView.OnItemSelectedListener,OnGetPoiSe
     }
 
     override fun onClick(v: View?) {
+        if (arrayList.isEmpty()){
+            return
+        }
         when(v){
             btn_hotel->{
                 dataList.clear()
@@ -125,6 +131,8 @@ class RecommendFragment:Fragment(),AdapterView.OnItemSelectedListener,OnGetPoiSe
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val map = arrayList[position]
+        dataList.clear()
+        adapter.notifyDataSetChanged()
         val stringBuilder = StringBuilder()
         stringBuilder.append("活动地点："+map["actionPlace"]+"\r\n")
         stringBuilder.append("活动介绍："+map["actionDescription"]+"\r\n")

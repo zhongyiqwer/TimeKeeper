@@ -43,8 +43,7 @@ public class ImageUtil {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             path = Environment.getExternalStorageDirectory() + File.separator;//保存到sd根目录下
         }
-
-
+        System.out.println("path = "+path);
         // File f = new File(path, System.currentTimeMillis() + ".jpg");
         File f = new File(path, "share" + ".jpg");
         if (f.exists()) {

@@ -12,6 +12,7 @@ import com.example.timekeeper.base.BaseActivity
 import com.example.timekeeper.dao.Action
 import com.example.timekeeper.adapter.GridViewAdapter
 import com.example.timekeeper.util.Common
+import com.example.timekeeper.util.DateTimeHelper
 import com.example.timekeeper.util.HttpHelper
 import com.example.timekeeper.util.URL
 import kotlinx.android.synthetic.main.select_time_activity.*
@@ -48,11 +49,14 @@ class SelectTimeActivity :BaseActivity() ,View.OnClickListener,AdapterView.OnIte
 
     lateinit var flag :Array<Int>
 
+    private var isUpdate:Boolean=false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getTimeStyle()
         setContentView(R.layout.select_time_activity)
         activityId = intent.getStringExtra("activityId")
+        isUpdate = intent.getBooleanExtra("isUpdate",false)
         initView()
         initData()
     }
@@ -93,23 +97,59 @@ class SelectTimeActivity :BaseActivity() ,View.OnClickListener,AdapterView.OnIte
                 map.put("userId",Common.userId)
                 map.put("activityId",this!!.activityId!!)
                 map.put("time_campute",Common.getTimeString(flag.toIntArray()))
-                HttpHelper.sendOkHttpRequest(URL.TAKE_Action_Post,map,object :Callback{
-                    override fun onFailure(call: Call?, e: IOException?) {
-                        runOnUiThread {
-                            Common.display(this@SelectTimeActivity,"加入失败")
-                        }
-                    }
-                    override fun onResponse(call: Call?, response: Response?) {
-                        if ("success".equals(HttpHelper.getMessage(response!!.body()!!.string()))){
+                if(isUpdate){
+                    HttpHelper.sendOkHttpRequest(URL.Update_Action,map,object :Callback{
+                        override fun onFailure(call: Call?, e: IOException?) {
                             runOnUiThread {
-                                Common.display(this@SelectTimeActivity,"加入成功")
-                                val intent = Intent(this@SelectTimeActivity, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
+                                Common.display(this@SelectTimeActivity,"修改失败")
                             }
                         }
-                    }
-                })
+                        override fun onResponse(call: Call?, response: Response) {
+                            val body = response.body()!!.string()
+                            println(body)
+                            if ("success" == HttpHelper.getMessage(body)){
+                                runOnUiThread {
+                                    Common.display(this@SelectTimeActivity,"修改成功")
+                                    val intent = Intent(this@SelectTimeActivity, MainActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                }
+                            } else{
+                                runOnUiThread {
+                                    Common.display(this@SelectTimeActivity,"修改失败")
+                                }
+                            }
+                        }
+                    })
+                }else{
+                    HttpHelper.sendOkHttpRequest(URL.TAKE_Action_Post,map,object :Callback{
+                        override fun onFailure(call: Call?, e: IOException?) {
+                            runOnUiThread {
+                                Common.display(this@SelectTimeActivity,"加入失败")
+                            }
+                        }
+                        override fun onResponse(call: Call?, response: Response) {
+                            val body = response.body()!!.string()
+                            println(body)
+                            if ("success" == HttpHelper.getMessage(body)){
+                                runOnUiThread {
+                                    Common.display(this@SelectTimeActivity,"加入成功")
+                                    val intent = Intent(this@SelectTimeActivity, MainActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                }
+                            }else if ("existed" == HttpHelper.getMessage(body)){
+                                runOnUiThread {
+                                    Common.display(this@SelectTimeActivity,"已存在")
+                                }
+                            }else{
+                                runOnUiThread {
+                                    Common.display(this@SelectTimeActivity,"加入失败")
+                                }
+                            }
+                        }
+                    })
+                }
             }
         }
     }
@@ -253,7 +293,24 @@ class SelectTimeActivity :BaseActivity() ,View.OnClickListener,AdapterView.OnIte
 
                         val spiltString = Common.spiltString(action.start_time)
                         var data = Common.arrToArrarList(spiltString)
-                        dataList = data
+
+                        val dateTime3 = DateTimeHelper.getCurrentDateTime3()
+                        val split = dateTime3.split(" ")
+                        val s = activitySelectDate.split("_")[0]
+                        if (DateTimeHelper.daysBetween(split[0],s)>1){
+                            dataList = data
+                        }else{
+                            val hour = split[1].toInt()
+                            println("hour =  $hour")
+                            for (i in data.indices){
+                                if (i<=hour){
+                                    dataList.add("0")
+                                }else{
+                                    dataList.add(data[i])
+                                }
+                            }
+                        }
+
                         timedata = Common.initAdapterData(activityContinueTime,activitySelectDate)
                         adpater = GridViewAdapter(this@SelectTimeActivity,dataList,timedata)
                         select_grid.setAdapter(adpater)

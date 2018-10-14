@@ -29,16 +29,11 @@ public class Common {
 //	public static final String IMG_CACHE_PATH = "/PoseCamera/";
 //	public static final String FULL_IMG_CACHE_PATH = "/mnt/sdcard"+IMG_CACHE_PATH;
 //	public static String local_pic_path = Environment.getExternalStorageDirectory()+"/Android/data/cn.xdu.poscam/cache/imageCache/";
-//	public static User user;
 	public static final String TAG = "timeKeeper:";
 
 	public static String userId;
 	public static String userName;
 
-	public static String fragParamName;
-	public static String fragParam;
-
-	public static boolean isVisible;
 	public static AlertDialog mAlertDialog;
 
 	public static ArrayList<HashMap<String,String>> fragmentData;
@@ -68,15 +63,20 @@ public class Common {
 
 	//返回所有活动
 	public static ArrayList<HashMap<String,String>> getFragmentData(){
-		return fragmentData;
+		if (fragmentData!=null && !fragmentData.isEmpty()){
+			return fragmentData;
+		}
+		return null;
 	}
 
 	//返回未完成活动
 	public static ArrayList<HashMap<String,String>> getFragmentNoDone(){
 		ArrayList<HashMap<String, String>> maps = new ArrayList<>();
-		for (HashMap map:fragmentData) {
-			if (map.get("actionState")!=null && "0".equals(map.get("actionState"))){
-				maps.add(map);
+		if (fragmentData!=null && !fragmentData.isEmpty()){
+			for (HashMap map:fragmentData) {
+				if (map.get("actionState")!=null && "0".equals(map.get("actionState"))){
+					maps.add(map);
+				}
 			}
 		}
 		return maps;
@@ -85,9 +85,11 @@ public class Common {
 	//返回我创建活动
 	public static ArrayList<HashMap<String,String>> getFragmentMy(){
 		ArrayList<HashMap<String, String>> maps = new ArrayList<>();
-		for (HashMap map:fragmentData) {
-			if (map.get("actionCreater")!=null && map.get("actionCreater").equals(userId)){
-				maps.add(map);
+		if (fragmentData!=null && !fragmentData.isEmpty()) {
+			for (HashMap map : fragmentData) {
+				if (map.get("actionCreater") != null && map.get("actionCreater").equals(userId)) {
+					maps.add(map);
+				}
 			}
 		}
 		return maps;
@@ -203,58 +205,14 @@ public class Common {
 			String endString = String.valueOf(end);
 			//Log.e("initAdapterData","endBool="+ endString.endsWith(".0")+" qu="+endString.equals(".0"));
 			//String[] split = endString.split(".");
-			//Log.e("initAdapterData","splitLne="+split.length+" end="+end);
+			//Log.e("initAdapterData","i = "+i);
 			if (endString.endsWith(".5")){
 				arrayList.add(start+":00~"+((int)end+1)%24+":30");
 			}else {
 				arrayList.add(start+":00~"+(int)end+":59");
 			}
 		}
-
-		/*int range = (int)(date/time);
-		ArrayList<String> arrayList = new ArrayList<>();
-		for (int i=0;i<range;i++){
-			double temp = (i*time)%24;
-			String[] split = String.valueOf(temp).split(".");
-			if (split[1] == "5"){
-				arrayList.add(split[0]+":30");
-			}else {
-				arrayList.add(split[0]+":00");
-			}
-		}*/
-
-		/*date = date - time.toInt()
-		flag = Array(date+1,{0})
-		for (i in 0..date){
-			val start  = i%24
-			val end :Double= (i+time-1)%24
-			val data = HashMap<String,String>()
-			val split = end.toString().split('.')
-			if (split[1] == "5"){
-				data.put("text",""+start+":00~"+(split[0].toInt()+1)%24+":30")
-			}else{
-				println(end.toString()+"  "+split[0].toInt())
-				data.put("text",""+start+":00~"+split[0]+":59")
-			}*/
-		/* String [] name = {"6:00", "7:00", "8:00", "9:00",
-				 "10:00", "11:00", "12:00", "13:00",
-				 "14:00", "45:00", "16:00", "17:00",
-				 "18:00", "19:00", "20:00", "21:00",
-				 "22:00", "23:00", "0:00", "1:00",
-				 "2:00", "3:00", "4:00", "5:00"};
-		int j=0;
-		for (int i=0;i<name.length;i++){
-			if (!dataList.isEmpty()){
-				if (dataList.size()>=j){
-					name[i]=dataList.get(j);
-				}
-				j++;
-			}
-		}
-		ArrayList<String> arrayList = new ArrayList<>();
-		for (int i=0;i<name.length;i++){
-			arrayList.add(name[i]);
-		}*/
+		Log.e("initAdapterData","arrayList = "+arrayList);
 		return arrayList;
 	}
 

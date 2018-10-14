@@ -1,6 +1,6 @@
 package com.example.timekeeper.activity
 
-import android.content.Intent
+import android.content.*
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -16,15 +16,22 @@ import com.example.timekeeper.fragment.AllActionFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import android.graphics.Bitmap
+import android.os.IBinder
+import android.support.v4.content.LocalBroadcastManager
+import android.support.v7.app.AlertDialog
+import android.text.method.ScrollingMovementMethod
 import android.view.KeyEvent
 import android.widget.TextView
 import com.uuzuche.lib_zxing.activity.CaptureActivity
 import android.widget.Toast
+import com.example.timekeeper.ActionService
 import com.example.timekeeper.fragment.RecommendFragment
 import com.example.timekeeper.module_login_reg.login
 import com.example.timekeeper.util.Common
 import com.example.timekeeper.util.ImageUtil
 import com.uuzuche.lib_zxing.activity.CodeUtils
+import kotlinx.android.synthetic.main.dialog_actions.*
+import kotlinx.android.synthetic.main.dialog_actions.view.*
 
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener ,BottomNavigationBar.OnTabSelectedListener{
@@ -41,6 +48,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     lateinit internal var bottomNavigationBar: BottomNavigationBar
     internal var lastSelectedPosition = 0
+
+    lateinit var localReceiver: LocalReceiver
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +85,51 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             println(Common.userName)
             name.text = Common.userName
         }
+
+        //开启通知服务
+        val intent = Intent(this, ActionService::class.java)
+        startService(intent)
+
+        //开启本地广播
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("com.example.timekeeper.notify")
+        localReceiver = LocalReceiver()
+        LocalBroadcastManager.getInstance(this).registerReceiver(localReceiver,intentFilter)
+    }
+
+    inner class LocalReceiver:BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent) {
+            when(intent.action){
+                "com.example.timekeeper.notify"->{
+                    println("收到本地广播")
+                    val list = intent.getStringArrayListExtra("actions")
+                    val noDone = Common.getFragmentNoDone()
+                    val arrayList = ArrayList<HashMap<String, String>>()
+                    for (map1 in noDone){
+                        for (s in list){
+                            if (map1["actionId"] == s){
+                                arrayList.add(map1)
+                            }
+                        }
+                    }
+                    val view = View.inflate(this@MainActivity, R.layout.dialog_actions, null)
+                    val builder = StringBuilder()
+                    for (map2 in arrayList){
+                        val actionName = map2["actionName"]
+                        builder.append("活动:\"$actionName\"快要开始了\r\n")
+                    }
+                    view.actionTv.movementMethod = ScrollingMovementMethod.getInstance()
+                    view.actionTv.text = builder.toString()
+                    val alertDialog = AlertDialog.Builder(this@MainActivity)
+                            .setView(view)
+                            .show()
+                    view.btnOk.setOnClickListener {
+                        alertDialog.cancel()
+                    }
+                }
+            }
+        }
+
     }
 
     override fun onBackPressed() {
@@ -166,7 +221,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             val bundle = Bundle()
             bundle.putString("fragmentType","0")
             allFragment.setArguments(bundle)
-            toolbar.title = "TimeKeeper"
+            toolbar.title = "Timekeeper"
             fab.visibility = View.VISIBLE
             replace(R.id.fragment_contain, allFragment)
         }.commitAllowingStateLoss()
@@ -191,19 +246,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 0 -> {  val bundle = Bundle()
                         bundle.putString("fragmentType","0")
                         allFragment.setArguments(bundle)
-                        toolbar.title = "TimeKeeper"
+                        toolbar.title = "Timekeeper"
                         fab.visibility = View.VISIBLE
                         replace(R.id.fragment_contain, allFragment)}
                 1 -> {val bundle = Bundle()
                       bundle.putString("fragmentType","1")
                     noDoneFragment.setArguments(bundle)
-                    toolbar.title = "TimeKeeper"
+                    toolbar.title = "Timekeeper"
                     fab.visibility = View.VISIBLE
                       replace(R.id.fragment_contain, noDoneFragment)}
                 2 -> {val bundle = Bundle()
                       bundle.putString("fragmentType","2")
                     myCreateFragment.setArguments(bundle)
-                    toolbar.title = "TimeKeeper"
+                    toolbar.title = "Timekeeper"
                     fab.visibility = View.VISIBLE
                       replace(R.id.fragment_contain, myCreateFragment)}
                 3 -> { val bundle = Bundle()
@@ -282,5 +337,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(localReceiver)
     }
 }

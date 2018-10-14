@@ -161,8 +161,16 @@ class ActionPersoneActivity : BaseActivity() ,AdapterView.OnItemClickListener,Le
                 //val jsonString = JSON.toJSONString(userIdList)
                 val jsonString = JSONArray.toJSONString(userIdList)
                 userLevel.put("userIds",jsonString)
+                println("$jsonString")
+                println("userLevel $userLevel")
                 postLevelChange()
+            }else{
+                val intent = Intent(this@ActionPersoneActivity, DetailMyAddActivity::class.java)
+                intent.putExtra("activityId",actionId)
+                startActivity(intent)
+                finish()
             }
+            return true
         }
 
         return super.onKeyDown(keyCode, event)
@@ -173,28 +181,34 @@ class ActionPersoneActivity : BaseActivity() ,AdapterView.OnItemClickListener,Le
             override fun onFailure(call: Call?, e: IOException?) {
                 runOnUiThread {
                     Common.display(this@ActionPersoneActivity,"更改权限失败")
+                    val intent = Intent(this@ActionPersoneActivity, DetailMyAddActivity::class.java)
+                    intent.putExtra("activityId",actionId)
+                    startActivity(intent)
+                    finish()
                 }
             }
 
-            override fun onResponse(call: Call?, response: Response?) {
-                if("success".equals(HttpHelper.getMessage(response!!.body()!!.string()))){
+            override fun onResponse(call: Call?, response: Response) {
+                val body = response.body()!!.string()
+                println("level $body")
+                if("success" == HttpHelper.getMessage(body)){
                     runOnUiThread {
                         Common.display(this@ActionPersoneActivity,"更改权限成功")
-                        val intent = Intent(this@ActionPersoneActivity, DetailMyAddActivity::class.java)
-                        startActivity(intent)
-                        finish()
                     }
                 }
+                val intent = Intent(this@ActionPersoneActivity, DetailMyAddActivity::class.java)
+                intent.putExtra("activityId",actionId)
+                startActivity(intent)
+                finish()
             }
 
         })
     }
 
-    override fun userLevelChanghe(userId: String?, level: String) {
-        userLevel.put(userId!!,level!!)
+    override fun userLevelChanghe(userId: String, level: String) {
+        userLevel.put(userId,level)
         userIdList.add(userId)
-        println(userId+" : "+level)
+        println("$userId : $level")
     }
-
 
 }

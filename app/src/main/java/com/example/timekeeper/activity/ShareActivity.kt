@@ -4,8 +4,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.view.KeyEvent
+import android.support.v4.content.FileProvider
 import android.view.View
 import com.example.timekeeper.R
 import com.example.timekeeper.base.BaseActivity
@@ -13,6 +14,7 @@ import com.example.timekeeper.util.ImageUtil
 import com.example.timekeeper.util.URL
 import com.uuzuche.lib_zxing.activity.CodeUtils
 import kotlinx.android.synthetic.main.activity_share.*
+import java.io.File
 
 /**
  * Created by ZY on 2018/6/10.
@@ -44,25 +46,35 @@ class ShareActivity :BaseActivity(),View.OnClickListener{
         println(file!=null)
         println(file.isFile)
         if (file!=null && file.isFile){
-            val uri = Uri.fromFile(file)
-            val intent = Intent()
-            intent.setAction(Intent.ACTION_SEND)
-            intent.putExtra(Intent.EXTRA_STREAM,uri)
-            intent.setType("image/*")
-            startActivity(Intent.createChooser(intent,"分享活动"))
-            finish()
+            if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
+                println("android 8.0")
+                val uri = getUri(file)
+                println("uri = $uri")
+                val intent = Intent()
+                intent.flags = Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
+                intent.action = Intent.ACTION_SEND
+                intent.putExtra(Intent.EXTRA_STREAM,uri)
+                intent.setType("image/*")
+                intent.flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
+                this.startActivity(Intent.createChooser(intent,"分享活动"))
+                finish()
+            }else{
+                val uri = getUri(file)
+                val intent = Intent()
+                intent.setAction(Intent.ACTION_SEND)
+                intent.putExtra(Intent.EXTRA_STREAM,uri)
+                intent.setType("image/*")
+                startActivity(Intent.createChooser(intent,"分享活动"))
+                finish()
+            }
         }
     }
 
-
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-            return true
+    private fun getUri(file:File):Uri{
+        return if (Build.VERSION.SDK_INT >= 24) {
+            FileProvider.getUriForFile(applicationContext, "com.example.timekeeper.fileprovider", file)
+        } else {
+            Uri.fromFile(file)
         }
-        return super.onKeyDown(keyCode, event)
     }
 }

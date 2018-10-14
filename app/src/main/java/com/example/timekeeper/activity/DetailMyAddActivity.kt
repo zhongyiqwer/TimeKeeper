@@ -5,15 +5,14 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import com.alibaba.fastjson.JSON
 import com.example.timekeeper.R
 import com.example.timekeeper.base.BaseActivity
 import com.example.timekeeper.dao.Action
 import com.example.timekeeper.adapter.GridViewAdapter
-import com.example.timekeeper.util.Common
-import com.example.timekeeper.util.HttpHelper
-import com.example.timekeeper.util.URL
+import com.example.timekeeper.util.*
 import kotlinx.android.synthetic.main.detail_action_layout.*
 import okhttp3.Call
 import okhttp3.Callback
@@ -35,6 +34,7 @@ class DetailMyAddActivity :BaseActivity(),View.OnClickListener{
     internal var timeStyle :Int?=0
     internal var actionId :String?="0"
     internal var creator :String?="0"
+    internal var timeCompute :String?=""
 
     lateinit var dataList: ArrayList<String>
     lateinit var timedata: ArrayList<String>
@@ -43,7 +43,15 @@ class DetailMyAddActivity :BaseActivity(),View.OnClickListener{
         super.onCreate(savedInstanceState)
         actionId = intent.getStringExtra("activityId")
         getTimeStyle()
+        //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        //window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         setContentView(R.layout.detail_action_layout)
+        AndroidBug54971Workaround
+                .assistActivity(findViewById(android.R.id.content))
+        if (NaviUtil.isNavigationBarShow(this)){
+            val height = NaviUtil.getBottomNavigatorHeight(this)
+            println("height = $height")
+        }
         initView()
         initData()
     }
@@ -52,6 +60,8 @@ class DetailMyAddActivity :BaseActivity(),View.OnClickListener{
         select_grid = findViewById(R.id.gridView2)
         button = findViewById(R.id.button)
         button.setOnClickListener(this)
+        btnUpdate.setOnClickListener(this)
+        btnDelete.setOnClickListener(this)
         tv_name = findViewById(R.id.tv_name)
         tv_time = findViewById(R.id.tv_time)
         tv_introduce = findViewById(R.id.tv_introduce)
@@ -99,7 +109,7 @@ class DetailMyAddActivity :BaseActivity(),View.OnClickListener{
 
     private fun initData() {
         val map = HashMap<String,String>()
-        map.put("activityId", this!!.actionId!!)
+        map["activityId"] = this.actionId!!
         HttpHelper.sendOkHttpRequest(URL.GET_ONE_Action,map,object :Callback{
             override fun onFailure(call: Call?, e: IOException?) {
 
@@ -120,6 +130,8 @@ class DetailMyAddActivity :BaseActivity(),View.OnClickListener{
                         tv_time.text = action.lastingTime+"小时"
                         tv_place.text = action.activityPlace
                         tv_introduce.text = action.description
+
+                        timeCompute = action.time_compute
 
                         val activitySelectDate = action.activitySelectDate
                         val activityContinueTime = action.lastingTime
@@ -142,14 +154,58 @@ class DetailMyAddActivity :BaseActivity(),View.OnClickListener{
         if (v == button){
             val intent = Intent(this, ActionPersoneActivity::class.java)
             println("creator:"+creator.toString())
-            if (Common.userId!!.equals(creator)){
+            if (Common.userId==null || Common.userId.isEmpty()){
+                val preferences = this.getSharedPreferences("config", 0)
+                Common.userId = preferences.getString("userId", "")
+            }
+            if (Common.userId == creator){
                 intent.putExtra("isMy",true)
             }else {
                 intent.putExtra("isMy", false)
             }
             intent.putExtra("actionId",actionId)
             startActivity(intent)
-            //finish()
+            finish()
+        }
+        if (v== btnUpdate){
+            val splits = timeCompute!!.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val data1 = splits[0]
+            var parseLong = DateTimeHelper.daytoMillis(data1)
+            val time = Integer.parseInt(splits[1])
+            parseLong += (3600 * 1000 * time).toLong()
+            val currentTimeMillis = System.currentTimeMillis()
+            if (parseLong-currentTimeMillis>=1000*3600*2){
+                val intent = Intent(this, SelectTimeActivity::class.java)
+                intent.putExtra("activityId",actionId)
+                intent.putExtra("isUpdate",true)
+                startActivity(intent)
+                finish()
+            }else{
+                Toast.makeText(this@DetailMyAddActivity,"活动开始时间小于2小时，无法修改",Toast.LENGTH_SHORT).show()
+            }
+        }
+        if (v==btnDelete){
+            if (creator == Common.userId){
+                val map = HashMap<String,String>()
+                map["activityId"] = this.actionId!!
+                HttpHelper.sendOkHttpRequest(URL.Delete_Action,map,object :Callback{
+                    override fun onFailure(call: Call?, e: IOException?) {
+
+                    }
+                    override fun onResponse(call: Call?, response: Response) {
+                        val body = response.body()!!.string()
+                        println("detail:$body")
+                        if ("success" == HttpHelper.getMessage(body)){
+                            runOnUiThread {
+                               Toast.makeText(this@DetailMyAddActivity,"删除成功",Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this@DetailMyAddActivity, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                    }
+                })
+            }
         }
     }
 

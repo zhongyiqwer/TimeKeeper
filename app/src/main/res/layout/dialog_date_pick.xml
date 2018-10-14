@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择开始时间"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"/>
+            <DatePicker
+                android:id="@+id/datepickerSta"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:spinnersShown="false"
+                android:calendarViewShown="true"
+                android:datePickerMode="spinner"
+                android:layout_gravity="center_horizontal"/>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1px"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/lightGray"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择结束时间"
+                android:layout_gravity="center"/>
+            <DatePicker
+                android:id="@+id/datepickerEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnersShown="false"
+                android:calendarViewShown="true"
+                android:datePickerMode="spinner"
+                android:layout_gravity="center_horizontal"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

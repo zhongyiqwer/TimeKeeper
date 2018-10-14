@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TimeKeeper</string>
+    <string name="app_name">Timekeeper</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -12,8 +12,8 @@
         <item>小组讨论</item>
     </string-array>
     <string-array name="spinnarr_num">
-        <item>1~10人</item>
-        <item>11~30人</item>
+        <item>1~30人</item>
+        <item>30~100人</item>
         <item>100~1000人</item>
         <item>1000人以上</item>
     </string-array>

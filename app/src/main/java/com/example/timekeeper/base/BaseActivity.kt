@@ -3,6 +3,7 @@ package com.example.timekeeper.base
 import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.example.timekeeper.activity.MainActivity
 
 /**
  * Created by ZJX on 2018/5/4.
@@ -28,5 +29,14 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mActivitys.remove(this)
+    }
+
+    fun isMainLive():Boolean{
+        for (act in mActivitys){
+            if (act is MainActivity){
+                return true
+            }
+        }
+        return false
     }
 }

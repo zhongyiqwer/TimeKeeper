@@ -31,7 +31,7 @@ public class HttpHelper {
 
     public static String getMessage(String response){
         String message = "";
-        if (response!=null && !response.isEmpty()){
+        if (response!=null && !response.isEmpty() && !response.startsWith("<html>")){
             JSONObject jsonObject = JSON.parseObject(response);
             message = jsonObject.getString("message");
         }

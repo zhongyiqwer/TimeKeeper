@@ -127,6 +127,10 @@ class FlashActivity : BaseActivity() {
                                 finish()
                             }
                         }
+                    }else{
+                        val intent = Intent(this@FlashActivity, login::class.java)
+                        startActivity(intent)
+                        finish()
                     }
                 }
             })

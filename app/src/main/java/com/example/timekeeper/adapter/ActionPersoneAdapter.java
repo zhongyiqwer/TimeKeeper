@@ -90,6 +90,7 @@ public class ActionPersoneAdapter extends BaseAdapter {
                 holder.spinner.setOnItemSelectedListener(new ItemClickSelectListener(holder,position));
             }else {
                 holder.spinner.setClickable(false);
+                holder.spinner.setEnabled(false);
             }
 
             convertView.setTag(holder);
@@ -99,7 +100,7 @@ public class ActionPersoneAdapter extends BaseAdapter {
 
         //holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_launcher));
 
-        if (isMy){
+        /*if (isMy){
             if (map.get("userId").equals(Common.userId)){
                 holder.name.setText("自己");
                 holder.spinner.setSelection(2);
@@ -108,13 +109,13 @@ public class ActionPersoneAdapter extends BaseAdapter {
             }else {
                 holder.name.setText(map.get("userName"));
             }
-        }else {
+        }else {*/
             if (map.get("userId").equals(Common.userId)){
                 holder.name.setText("自己");
             }else {
                 holder.name.setText(map.get("userName"));
             }
-        }
+        //}
 
         holder.spinner.setSelection(Integer.parseInt(map.get("userLevel"))-1);
         lastLevel.put(position,Integer.parseInt(map.get("userLevel"))-1);

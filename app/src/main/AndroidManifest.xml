@@ -76,7 +76,8 @@
         </activity>
         <activity android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
 
         <activity android:name=".activity.AddActivity"
             android:windowSoftInputMode="adjustPan|stateHidden">
@@ -88,12 +89,29 @@
             android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity android:name=".module_login_reg.findPW"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
-        <activity android:name=".activity.DetailMyAddActivity"/>
-        <activity android:name=".activity.ActionPersoneActivity"/>
+        <activity android:name=".activity.DetailMyAddActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity android:name=".activity.ActionPersoneActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity android:name=".activity.SelectTimeActivity"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
-        <activity android:name=".activity.ShareActivity"/>
-        <activity android:name=".activity.ChangeMyActivity"/>
+        <activity android:name=".activity.ShareActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity android:name=".activity.ChangeMyActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+
+        <provider
+            android:authorities="com.example.timekeeper.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths"/>
+        </provider>
+
+        <service android:name=".ActionService"/>
+
     </application>
 
 </manifest>

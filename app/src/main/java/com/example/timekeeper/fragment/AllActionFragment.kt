@@ -1,5 +1,6 @@
 package com.example.timekeeper.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.ListView
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONException
+import com.example.timekeeper.ActionService
 import com.example.timekeeper.R
 import com.example.timekeeper.activity.ShareActivity
 import com.example.timekeeper.activity.DetailMyAddActivity
@@ -45,7 +47,7 @@ class AllActionFragment : Fragment() ,ShareListener,AdapterView.OnItemClickListe
         val view = inflater.inflate(R.layout.fragmant_all_action, null)
         var fragmentType = getArguments()!!.get("fragmentType")
         println("type=$fragmentType")
-        listView = view.findViewById<ListView>(R.id.list_view)
+        listView = view.findViewById(R.id.list_view)
         if (fragmentType == "0"){
             dataList = ArrayList<HashMap<String,String>>()
             adapter = actionPlayAdapter(activity, dataList)
@@ -69,7 +71,11 @@ class AllActionFragment : Fragment() ,ShareListener,AdapterView.OnItemClickListe
 
     private fun initData(){
         val map = HashMap<String, String>()
-        println("userID"+Common.userId)
+        if (Common.userId==null || Common.userId.isEmpty()){
+            val preferences = activity!!.getSharedPreferences("config", 0)
+            Common.userId = preferences.getString("userId", "")
+        }
+        println("userID "+Common.userId)
         map.put("userID",Common.userId)
 
         HttpHelper.sendOkHttpRequest(URL.GET_ALL_Actions,map,object :Callback{
@@ -86,6 +92,9 @@ class AllActionFragment : Fragment() ,ShareListener,AdapterView.OnItemClickListe
                             val array = jsonObject.getString("array")
 
                             val parseArray = JSON.parseArray(array)
+                            if (parseArray==null || parseArray.isEmpty()){
+                                return@runOnUiThread
+                            }
                             println("parseArray="+parseArray.size)
                             val size = parseArray.size-1
                             if (size>=0){
@@ -111,6 +120,8 @@ class AllActionFragment : Fragment() ,ShareListener,AdapterView.OnItemClickListe
 
                         }
                         Common.putFragmentData(dataList)
+                        val intent = Intent(context, ActionService::class.java)
+                        context!!.startService(intent)
                     }
                 }
             }

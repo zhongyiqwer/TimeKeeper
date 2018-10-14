@@ -35,6 +35,11 @@ public class GridViewAdapter extends BaseAdapter {
         TextView textView;
     }
 
+    public void setTimeData(ArrayList<String> timeData){
+        this.timeData.clear();
+        this.timeData = timeData;
+    }
+
     @Override
     public int getCount() {
         return dataList.size();
@@ -52,7 +57,7 @@ public class GridViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         String data = dataList.get(position);
         if (convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.gridview_item_layout, parent, false);
@@ -63,7 +68,11 @@ public class GridViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.textView.setText(timeData.get(position));
+        //Log.e("GridView:",""+position+" "+timeData.size());
+        //if (timeData!=null && !timeData.isEmpty()){
+            viewHolder.textView.setText(timeData.get(position));
+            viewHolder.textView.setTextColor(context.getResources().getColor(R.color.lightGray));
+        //}
         switch (data){
             case "0": viewHolder.textView.setTextColor(Color.WHITE);
                 viewHolder.textView.setBackgroundResource(
@@ -84,7 +93,7 @@ public class GridViewAdapter extends BaseAdapter {
             case "2": viewHolder.textView.setBackgroundResource(
                     R.color.bar_red);
                 break;
-            default: viewHolder.textView.setText(data);
+            default:
         }
         return convertView;
     }

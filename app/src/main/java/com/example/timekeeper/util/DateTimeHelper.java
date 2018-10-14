@@ -16,11 +16,13 @@ public class DateTimeHelper {
 
 	@SuppressLint("SimpleDateFormat")
 	public static String FULL_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-	public static String DATE_FORMAT_TILL_SECOND = "yyyy-MM-dd HH:mm:ss";
+	//public static String DATE_FORMAT_TILL_SECOND = "yyyy-MM-dd HH:mm:ss";
 	public static SimpleDateFormat DATE_TILL_DAY_CURRENT_YEAR = new SimpleDateFormat(
 			"MM-dd");
 	public static SimpleDateFormat DATE_TILL_DAY_CH = new SimpleDateFormat(
 			"yyyy-MM-dd");
+	public static SimpleDateFormat DATE_FORMAT_TILL_SECOND = new SimpleDateFormat(
+			"yyyy-MM-dd HH:mm:ss");
 
 
 	/**
@@ -114,6 +116,12 @@ public class DateTimeHelper {
 	public static String getCurrentDateTime() {
 		 Date date=new Date();
 		   SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return dateFm.format(date);
+	}
+
+	public static String getCurrentDateTime3() {
+		Date date=new Date();
+		SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd HH");
 		return dateFm.format(date);
 	}
 

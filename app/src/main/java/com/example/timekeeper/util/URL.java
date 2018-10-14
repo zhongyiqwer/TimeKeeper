@@ -5,7 +5,7 @@ package com.example.timekeeper.util;
  */
 
 public class URL {
-    public static final String IP_AND_PORT = "http://114.116.50.208:8080/";
+    public static final String IP_AND_PORT = "http://114.116.50.208:27484/";
 
     public static  final String LOGIN_URL = IP_AND_PORT+"timepicker/servlet/loginServlet";
 
@@ -21,12 +21,16 @@ public class URL {
 
     public static final String GET_Select_Acion = IP_AND_PORT+"timepicker/servlet/findActivityDetailServlet";
 
-    public static final String Change_Level = IP_AND_PORT+"timepicker/servlet/";
+    public static final String Change_Level = IP_AND_PORT+"timepicker/servlet/updateWeightServlet";
 
     public static final String TAKE_Action_Post = IP_AND_PORT+"timepicker/servlet/participantServlet";
 
     public static final String Share_Action = IP_AND_PORT+"timepicker/servlet/openAppServlet";
 
     public static final String FindPw_Action = IP_AND_PORT+"timepicker/servlet/findPwServlet";
+
+    public static final String Delete_Action = IP_AND_PORT+"timepicker/servlet/deleteActivityServlet";
+
+    public static final String Update_Action = IP_AND_PORT+"timepicker/servlet/updateUserTimeServlet";
 
 }

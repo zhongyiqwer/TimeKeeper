@@ -127,7 +127,11 @@ class DetailMyAddActivity :BaseActivity(),View.OnClickListener{
                         tv_name.text = action.activityName
                         tv_type.text = action.activityType
                         tv_num.text = action.activityNum
-                        tv_time.text = action.lastingTime+"小时"
+
+                        val split1 = action.activitySelectDate.split("_")
+                        val split2 = split1[0].split("-")
+                        val split3 = split1[1].split("-")
+                        tv_time.text = split2[1]+"."+split2[2]+"~"+split3[1]+"."+split3[2]+" 持续"+action.lastingTime+"小时"
                         tv_place.text = action.activityPlace
                         tv_introduce.text = action.description
 

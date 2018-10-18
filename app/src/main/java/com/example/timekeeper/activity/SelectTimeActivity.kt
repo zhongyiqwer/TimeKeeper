@@ -96,6 +96,7 @@ class SelectTimeActivity :BaseActivity() ,View.OnClickListener,AdapterView.OnIte
                 val map = HashMap<String, String>()
                 map.put("userId",Common.userId)
                 map.put("activityId",this!!.activityId!!)
+                println(Common.getTimeString(flag.toIntArray()))
                 map.put("time_campute",Common.getTimeString(flag.toIntArray()))
                 if(isUpdate){
                     HttpHelper.sendOkHttpRequest(URL.Update_Action,map,object :Callback{
@@ -282,7 +283,10 @@ class SelectTimeActivity :BaseActivity() ,View.OnClickListener,AdapterView.OnIte
                         tv_type.text = action.activityType
                         tv_num.text = action.activityNum
                         tv_place.text = action.activityPlace
-                        tv_time.text = action.lastingTime+"小时"
+                        val split1 = action.activitySelectDate.split("_")
+                        val split2 = split1[0].split("-")
+                        val split3 = split1[1].split("-")
+                        tv_time.text = split2[1]+"."+split2[2]+"~"+split3[1]+"."+split3[2]+" 持续"+action.lastingTime+"小时"
                         tv_introduce.text = action.description
 
                         val activityContinueTime = action.lastingTime

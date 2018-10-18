@@ -179,13 +179,9 @@ public class Common {
 
 	public static int getRange(String selectTime,String selectDate){
 		double time = Double.parseDouble(selectTime);
-		int date = 24;
-		int len = selectDate.split("_").length;
-		if (len==1){
-			date = 24;
-		}else if (len==2){
-			date = 48;
-		}
+		String[] split1 = selectDate.split("_");
+		int len = DateTimeHelper.daysBetween(split1[0], split1[1]);
+		int date = 24*len;
 		int range = date+1 - (int)time;
 		return range;
 	}
